@@ -1,10 +1,17 @@
-import { useState, FormEvent } from 'react';
-import { Mail, Lock, LogIn, UserPlus } from 'lucide-react';
+import { useState, FormEvent, useMemo } from 'react';
+import { Mail, Lock, LogIn, UserPlus, CheckCircle2, XCircle, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Logo from './Logo';
 
 interface AuthFormProps {
   onAuth: () => void;
+}
+
+interface PasswordRequirements {
+  minLength: boolean;
+  hasUppercase: boolean;
+  hasLowercase: boolean;
+  hasNumber: boolean;
 }
 
 export default function AuthForm({ onAuth }: AuthFormProps) {
@@ -13,20 +20,65 @@ export default function AuthForm({ onAuth }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [signupEmail, setSignupEmail] = useState('');
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState('');
+
+  const passwordRequirements = useMemo((): PasswordRequirements => {
+    return {
+      minLength: password.length >= 6,
+      hasUppercase: /[A-Z]/.test(password),
+      hasLowercase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+    };
+  }, [password]);
+
+  const isPasswordValid = useMemo(() => {
+    return Object.values(passwordRequirements).every(req => req === true);
+  }, [passwordRequirements]);
+
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    setResendMessage('');
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: signupEmail,
+      });
+
+      if (error) throw error;
+      setResendMessage('Verification email sent! Check your inbox.');
+    } catch (err: any) {
+      setResendMessage(err.message || 'Failed to resend email');
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+    setResendMessage('');
     setLoading(true);
 
     try {
       if (isSignUp) {
+        if (!isPasswordValid) {
+          setError('Password must meet all requirements above');
+          setLoading(false);
+          return;
+        }
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
         });
         if (error) throw error;
-        onAuth();
+
+        setSignupEmail(email);
+        setShowSuccess(true);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -112,7 +164,51 @@ export default function AuthForm({ onAuth }: AuthFormProps) {
                 />
               </div>
               {isSignUp && (
-                <p className="mt-1 text-xs text-gray-500">Password must be at least 6 characters</p>
+                <div className="mt-3 space-y-2">
+                  <p className="text-xs font-medium text-gray-600">Password must contain:</p>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-xs">
+                      {passwordRequirements.minLength ? (
+                        <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" />
+                      ) : (
+                        <XCircle size={14} className="text-gray-400 flex-shrink-0" />
+                      )}
+                      <span className={passwordRequirements.minLength ? 'text-green-600' : 'text-gray-500'}>
+                        At least 6 characters
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      {passwordRequirements.hasUppercase ? (
+                        <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" />
+                      ) : (
+                        <XCircle size={14} className="text-gray-400 flex-shrink-0" />
+                      )}
+                      <span className={passwordRequirements.hasUppercase ? 'text-green-600' : 'text-gray-500'}>
+                        One uppercase letter (A-Z)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      {passwordRequirements.hasLowercase ? (
+                        <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" />
+                      ) : (
+                        <XCircle size={14} className="text-gray-400 flex-shrink-0" />
+                      )}
+                      <span className={passwordRequirements.hasLowercase ? 'text-green-600' : 'text-gray-500'}>
+                        One lowercase letter (a-z)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      {passwordRequirements.hasNumber ? (
+                        <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" />
+                      ) : (
+                        <XCircle size={14} className="text-gray-400 flex-shrink-0" />
+                      )}
+                      <span className={passwordRequirements.hasNumber ? 'text-green-600' : 'text-gray-500'}>
+                        One number (0-9)
+                      </span>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -156,6 +252,74 @@ export default function AuthForm({ onAuth }: AuthFormProps) {
           <p>Start tracking your property investments today</p>
         </div>
       </div>
+
+      {showSuccess && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 relative animate-fade-in">
+            <button
+              onClick={() => {
+                setShowSuccess(false);
+                setEmail('');
+                setPassword('');
+                setIsSignUp(false);
+              }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="text-center">
+              <div className="mx-auto w-16 h-16 bg-gradient-to-r from-[#4ECDC4] to-[#44A08D] rounded-full flex items-center justify-center mb-4">
+                <Mail size={32} className="text-white" />
+              </div>
+
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Check Your Email!</h3>
+
+              <p className="text-gray-600 mb-4">
+                We've sent a verification link to
+              </p>
+
+              <p className="text-[#4ECDC4] font-semibold mb-4 break-all px-2">
+                {signupEmail}
+              </p>
+
+              <p className="text-gray-600 mb-6">
+                Click the link in the email to activate your account. Don't forget to check your spam folder!
+              </p>
+
+              {resendMessage && (
+                <div className={`mb-4 p-3 rounded-lg text-sm ${
+                  resendMessage.includes('sent')
+                    ? 'bg-green-50 text-green-700 border border-green-200'
+                    : 'bg-red-50 text-red-700 border border-red-200'
+                }`}>
+                  {resendMessage}
+                </div>
+              )}
+
+              <button
+                onClick={handleResendVerification}
+                disabled={resendLoading}
+                className="w-full px-4 py-2 border-2 border-[#4ECDC4] text-[#4ECDC4] font-semibold rounded-lg hover:bg-[#4ECDC4] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+              >
+                {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowSuccess(false);
+                  setEmail('');
+                  setPassword('');
+                  setIsSignUp(false);
+                }}
+                className="w-full px-4 py-2 bg-gradient-to-r from-[#4ECDC4] to-[#44A08D] text-white font-semibold rounded-lg hover:shadow-lg transition-shadow"
+              >
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
