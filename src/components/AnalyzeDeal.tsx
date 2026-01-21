@@ -251,9 +251,10 @@ export default function AnalyzeDeal({ onSaveSuccess }: AnalyzeDealProps) {
         handleReset();
         setSaveSuccess(false);
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving deal:', error);
-      alert('Failed to save deal');
+      const errorMessage = error?.message || 'Unknown error occurred';
+      alert(`Failed to save deal: ${errorMessage}`);
       setIsSaving(false);
     }
   };

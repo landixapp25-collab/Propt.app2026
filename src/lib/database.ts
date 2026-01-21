@@ -279,12 +279,16 @@ export const savedDealService = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
+    if (!deal.askingPrice || deal.askingPrice <= 0) {
+      throw new Error('Asking price must be greater than 0');
+    }
+
     const { data, error } = await supabase
       .from('saved_deals')
       .insert({
         user_id: user.id,
         address: deal.address,
-        asking_price: deal.askingPrice || 0,
+        asking_price: deal.askingPrice,
         property_type: deal.propertyType,
         bedrooms: deal.bedrooms || null,
         renovation_costs: deal.renovationCosts || 0,
