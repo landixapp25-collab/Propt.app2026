@@ -35,13 +35,28 @@
     --spacing-xl: 32px;
   }
 
+  html {
+    background-color: #365563;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
   body {
     font-size: 16px;
     line-height: 1.6;
     color: var(--color-text-primary);
-    background-color: var(--color-background);
+    background-color: #365563;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    background-color: #365563;
   }
 
   h1, h2, h3, h4, h5, h6 {
