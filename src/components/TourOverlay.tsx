@@ -37,7 +37,7 @@ export default function TourOverlay({
           let left = 0;
 
           if (step.id === 'dashboard') {
-            top = 80;
+            top = window.innerHeight - 280;
             left = padding;
           } else {
             switch (step.position) {
