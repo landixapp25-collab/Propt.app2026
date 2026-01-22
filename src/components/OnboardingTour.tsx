@@ -16,7 +16,13 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
 
   const handleStartTour = () => {
     setShowWelcome(false);
-    setCurrentStepIndex(0);
+    const firstStep = TOUR_STEPS[0];
+    if (firstStep.navigateTo && onNavigate) {
+      onNavigate(firstStep.navigateTo);
+    }
+    setTimeout(() => {
+      setCurrentStepIndex(0);
+    }, 300);
   };
 
   const handleSkipTour = () => {
@@ -33,7 +39,17 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
     }
 
     if (currentStepIndex < TOUR_STEPS.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1);
+      const nextStepIndex = currentStepIndex + 1;
+      const nextStep = TOUR_STEPS[nextStepIndex];
+
+      if (nextStep.navigateTo && onNavigate) {
+        onNavigate(nextStep.navigateTo);
+        setTimeout(() => {
+          setCurrentStepIndex(nextStepIndex);
+        }, 300);
+      } else {
+        setCurrentStepIndex(nextStepIndex);
+      }
     } else {
       handleCompleteTour();
     }
@@ -41,7 +57,17 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
 
   const handleBack = () => {
     if (currentStepIndex > 0) {
-      setCurrentStepIndex(currentStepIndex - 1);
+      const prevStepIndex = currentStepIndex - 1;
+      const prevStep = TOUR_STEPS[prevStepIndex];
+
+      if (prevStep.navigateTo && onNavigate) {
+        onNavigate(prevStep.navigateTo);
+        setTimeout(() => {
+          setCurrentStepIndex(prevStepIndex);
+        }, 300);
+      } else {
+        setCurrentStepIndex(prevStepIndex);
+      }
     }
   };
 
@@ -54,20 +80,16 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
     if (currentStepIndex >= 0 && currentStepIndex < TOUR_STEPS.length) {
       const currentStep = TOUR_STEPS[currentStepIndex];
 
-      if (currentStep.navigateTo && onNavigate) {
-        onNavigate(currentStep.navigateTo);
-      }
-
       if (currentStep.targetSelector) {
         setTimeout(() => {
           const element = document.querySelector(currentStep.targetSelector!);
           if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
           }
-        }, 300);
+        }, 400);
       }
     }
-  }, [currentStepIndex, onNavigate]);
+  }, [currentStepIndex]);
 
   if (showWelcome) {
     return <WelcomeModal onStartTour={handleStartTour} onSkip={handleSkipTour} />;

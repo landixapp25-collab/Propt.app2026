@@ -139,18 +139,27 @@ export default function TourOverlay({
         </button>
 
         <div className="mb-4">
-          <div className="flex items-center gap-2 mb-3">
-            {Array.from({ length: totalSteps }).map((_, i) => (
-              <div
-                key={i}
-                className="h-1.5 flex-1 rounded-full transition-all"
-                style={{
-                  backgroundColor: i <= currentStepIndex ? '#5a9aa8' : '#E5E7EB',
-                }}
-              />
-            ))}
+          <div className="flex items-center justify-center gap-2 mb-3">
+            {Array.from({ length: totalSteps }).map((_, i) => {
+              const isCompleted = i < currentStepIndex;
+              const isCurrent = i === currentStepIndex;
+              const isFuture = i > currentStepIndex;
+
+              return (
+                <div
+                  key={i}
+                  className="w-3 h-3 rounded-full transition-all"
+                  style={{
+                    backgroundColor: isCompleted || isCurrent ? '#5a9aa8' : '#D1D5DB',
+                    border: isCurrent ? '2px solid #5a9aa8' : 'none',
+                    outline: isCurrent ? '2px solid white' : 'none',
+                    transform: isCurrent ? 'scale(1.2)' : 'scale(1)',
+                  }}
+                />
+              );
+            })}
           </div>
-          <p className="text-sm font-medium" style={{ color: '#5a9aa8' }}>
+          <p className="text-sm font-medium text-center" style={{ color: '#5a9aa8' }}>
             Step {currentStepIndex + 1} of {totalSteps}
           </p>
         </div>
