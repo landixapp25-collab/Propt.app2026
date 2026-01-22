@@ -37,7 +37,7 @@ export default function TourOverlay({
           let left = 0;
 
           if (step.id === 'dashboard') {
-            top = 120;
+            top = 80;
             left = padding;
           } else {
             switch (step.position) {
@@ -152,24 +152,29 @@ export default function TourOverlay({
       )}
 
       <div
-        className="absolute bg-white rounded-xl shadow-2xl p-5 transition-all duration-300"
+        className="absolute bg-white rounded-xl shadow-2xl transition-all duration-300"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
-          width: step.id === 'dashboard' ? '280px' : '320px',
+          width: step.id === 'dashboard' ? '240px' : '320px',
+          padding: step.id === 'dashboard' ? '12px' : '20px',
           maxHeight: 'calc(100vh - 32px)',
           zIndex: 52,
         }}
       >
         <button
           onClick={onSkip}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute text-gray-400 hover:text-gray-600 transition-colors"
+          style={{
+            top: step.id === 'dashboard' ? '8px' : '16px',
+            right: step.id === 'dashboard' ? '8px' : '16px'
+          }}
         >
-          <X className="w-5 h-5" />
+          <X className={step.id === 'dashboard' ? 'w-4 h-4' : 'w-5 h-5'} />
         </button>
 
-        <div className="mb-4">
-          <div className="flex items-center justify-center gap-2 mb-3">
+        <div className={step.id === 'dashboard' ? 'mb-2' : 'mb-4'}>
+          <div className={`flex items-center justify-center mb-2 ${step.id === 'dashboard' ? 'gap-1' : 'gap-2'}`}>
             {Array.from({ length: totalSteps }).map((_, i) => {
               const isCompleted = i < currentStepIndex;
               const isCurrent = i === currentStepIndex;
@@ -178,8 +183,10 @@ export default function TourOverlay({
               return (
                 <div
                   key={i}
-                  className="w-3 h-3 rounded-full transition-all"
+                  className="rounded-full transition-all"
                   style={{
+                    width: step.id === 'dashboard' ? '8px' : '12px',
+                    height: step.id === 'dashboard' ? '8px' : '12px',
                     backgroundColor: isCompleted || isCurrent ? '#5a9aa8' : '#D1D5DB',
                     border: isCurrent ? '2px solid #5a9aa8' : 'none',
                     outline: isCurrent ? '2px solid white' : 'none',
@@ -189,36 +196,40 @@ export default function TourOverlay({
               );
             })}
           </div>
-          <p className="text-sm font-medium text-center" style={{ color: '#5a9aa8' }}>
+          <p className={`font-medium text-center ${step.id === 'dashboard' ? 'text-xs' : 'text-sm'}`} style={{ color: '#5a9aa8' }}>
             Step {currentStepIndex + 1} of {totalSteps}
           </p>
         </div>
 
-        <h3 className="text-xl font-bold mb-3" style={{ color: '#1F2937' }}>
+        <h3 className={`font-bold ${step.id === 'dashboard' ? 'text-base mb-2' : 'text-xl mb-3'}`} style={{ color: '#1F2937' }}>
           {step.title}
         </h3>
 
-        <p className="text-gray-600 mb-6 leading-relaxed">
+        <p className={`text-gray-600 leading-relaxed ${step.id === 'dashboard' ? 'text-sm mb-3' : 'mb-6'}`}>
           {step.message}
         </p>
 
-        <div className="flex gap-3">
+        <div className={`flex ${step.id === 'dashboard' ? 'gap-2' : 'gap-3'}`}>
           {currentStepIndex > 0 && (
             <button
               onClick={onBack}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              className={`flex items-center gap-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors ${
+                step.id === 'dashboard' ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'
+              }`}
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className={step.id === 'dashboard' ? 'w-3 h-3' : 'w-4 h-4'} />
               Back
             </button>
           )}
           <button
             onClick={onNext}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white font-semibold transition-all hover:opacity-90"
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg text-white font-semibold transition-all hover:opacity-90 ${
+              step.id === 'dashboard' ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'
+            }`}
             style={{ backgroundColor: '#5a9aa8' }}
           >
             {currentStepIndex === totalSteps - 1 ? 'Finish' : 'Next'}
-            {currentStepIndex < totalSteps - 1 && <ArrowRight className="w-4 h-4" />}
+            {currentStepIndex < totalSteps - 1 && <ArrowRight className={step.id === 'dashboard' ? 'w-3 h-3' : 'w-4 h-4'} />}
           </button>
         </div>
       </div>
