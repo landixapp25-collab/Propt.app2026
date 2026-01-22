@@ -36,9 +36,8 @@ export const TOUR_STEPS: TourStep[] = [
     id: 'receipt-upload',
     title: 'Smart Receipt Upload',
     message: 'Snap a photo of any receipt - our AI automatically extracts vendor, amount, and date',
-    targetSelector: '[data-tour="receipt-upload"]',
+    targetSelector: '[data-tour="transactions"]',
     position: 'top',
-    navigateTo: 'dashboard',
   },
   {
     id: 'analyze-deal',

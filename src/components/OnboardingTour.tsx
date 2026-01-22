@@ -95,6 +95,13 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
       const prevStep = TOUR_STEPS[prevStepIndex];
       const currentStep = TOUR_STEPS[currentStepIndex];
 
+      // If going back from receipt-upload to transactions, just update step index
+      if (currentStep.id === 'receipt-upload' && prevStep.id === 'transactions') {
+        setCurrentStepIndex(prevStepIndex);
+        return;
+      }
+
+      // If going back from transactions, navigate to previous view
       if (currentStep.id === 'transactions' && prevStep.navigateTo && onNavigate) {
         onNavigate(prevStep.navigateTo);
         setTimeout(() => {
