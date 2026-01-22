@@ -38,8 +38,11 @@ export default function TourOverlay({
           let top = 0;
           let left = 0;
 
-          if (step.id === 'dashboard' || step.id === 'add-property' || step.id === 'transactions') {
+          if (step.id === 'dashboard' || step.id === 'add-property') {
             top = window.innerHeight - 280;
+            left = padding;
+          } else if (step.id === 'transactions') {
+            top = padding;
             left = padding;
           } else {
             switch (step.position) {

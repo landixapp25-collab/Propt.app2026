@@ -68,10 +68,10 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
       if (nextStep.id === 'transactions') {
         const demoPropertyId = localStorage.getItem('propt_demo_property_id');
         if (demoPropertyId && onNavigateToProperty) {
-          setCurrentStepIndex(nextStepIndex);
+          onNavigateToProperty(demoPropertyId);
           setTimeout(() => {
-            onNavigateToProperty(demoPropertyId);
-          }, 100);
+            setCurrentStepIndex(nextStepIndex);
+          }, 400);
           return;
         }
       }

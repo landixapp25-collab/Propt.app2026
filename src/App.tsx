@@ -478,7 +478,6 @@ function App() {
         <OnboardingTour
           onComplete={async () => {
             setShowOnboarding(false);
-            await loadData();
             const hasDemo = await propertyService.hasDemoProperty();
             if (hasDemo) {
               const shouldDelete = window.confirm(
@@ -486,9 +485,11 @@ function App() {
               );
               if (shouldDelete) {
                 await propertyService.deleteDemoProperties();
+                localStorage.removeItem('propt_demo_property_id');
                 await loadData();
               }
             }
+            setCurrentView('properties');
           }}
           onNavigate={(view) => setCurrentView(view)}
           onNavigateToProperty={async (propertyId) => {
