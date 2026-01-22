@@ -91,7 +91,7 @@ export default function ProfileView() {
     setError('');
 
     try {
-      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      const { error } = await supabase.auth.signOut();
       if (error && !error.message.includes('Auth session missing')) {
         console.error('Sign out error:', error);
         setError(error.message || 'Failed to sign out');
