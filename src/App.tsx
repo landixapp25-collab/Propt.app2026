@@ -81,11 +81,26 @@ function App() {
   useEffect(() => {
     if (user) {
       loadData();
-      if (!isOnboardingCompleted()) {
-        setTimeout(() => setShowOnboarding(true), 500);
-      }
+      checkAndStartOnboarding();
     }
   }, [user]);
+
+  const checkAndStartOnboarding = async () => {
+    if (!isOnboardingCompleted()) {
+      const allProperties = await propertyService.getAll();
+      const hasRealProperties = allProperties.some(p => !p.isDemo);
+
+      if (!hasRealProperties) {
+        const hasDemo = await propertyService.hasDemoProperty();
+        if (!hasDemo) {
+          await propertyService.createDemoProperty();
+          await loadData();
+        }
+      }
+
+      setTimeout(() => setShowOnboarding(true), 500);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -472,7 +487,19 @@ function App() {
 
       {showOnboarding && (
         <OnboardingTour
-          onComplete={() => setShowOnboarding(false)}
+          onComplete={async () => {
+            setShowOnboarding(false);
+            const hasDemo = await propertyService.hasDemoProperty();
+            if (hasDemo) {
+              const shouldDelete = window.confirm(
+                'Would you like to remove the demo property "Sample Property - 123 Demo Street"?\n\nYou can now add your own properties.'
+              );
+              if (shouldDelete) {
+                await propertyService.deleteDemoProperties();
+                await loadData();
+              }
+            }
+          }}
           onNavigate={(view) => setCurrentView(view)}
         />
       )}

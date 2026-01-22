@@ -55,7 +55,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'When tax time comes, export everything in one click - all transactions, receipts, and summaries organized for your accountant',
     targetSelector: '[data-tour="export"]',
     position: 'top',
-    navigateTo: 'profile',
+    navigateTo: 'dashboard',
   },
   {
     id: 'add-to-home',

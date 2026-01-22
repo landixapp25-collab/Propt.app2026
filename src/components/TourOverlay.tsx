@@ -85,48 +85,69 @@ export default function TourOverlay({
 
   return (
     <div className="fixed inset-0 z-50">
+      {/* Dark backdrop overlay */}
       <div
         className="absolute inset-0 transition-all duration-300"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
         onClick={onSkip}
       />
 
       {targetRect && (
         <>
+          {/* Spotlight cutout with enhanced pulsing glow */}
           <div
             className="absolute rounded-lg transition-all duration-300 pointer-events-none"
             style={{
-              top: targetRect.top - 4,
-              left: targetRect.left - 4,
-              width: targetRect.width + 8,
-              height: targetRect.height + 8,
-              boxShadow: '0 0 0 4px rgba(90, 154, 168, 0.5), 0 0 0 9999px rgba(0, 0, 0, 0.7)',
+              top: targetRect.top - 8,
+              left: targetRect.left - 8,
+              width: targetRect.width + 16,
+              height: targetRect.height + 16,
+              boxShadow: '0 0 0 4px rgba(90, 154, 168, 0.8), 0 0 0 9999px rgba(0, 0, 0, 0.6)',
               zIndex: 51,
             }}
           />
 
+          {/* Pulsing animated border */}
           <div
-            className="absolute animate-pulse"
+            className="absolute"
             style={{
-              top: targetRect.top - 4,
-              left: targetRect.left - 4,
-              width: targetRect.width + 8,
-              height: targetRect.height + 8,
-              border: '2px solid #5a9aa8',
-              borderRadius: '8px',
+              top: targetRect.top - 8,
+              left: targetRect.left - 8,
+              width: targetRect.width + 16,
+              height: targetRect.height + 16,
+              border: '3px solid #5a9aa8',
+              borderRadius: '12px',
               zIndex: 51,
               pointerEvents: 'none',
+              animation: 'pulse-glow 2s ease-in-out infinite',
+            }}
+          />
+
+          {/* Additional outer glow ring */}
+          <div
+            className="absolute"
+            style={{
+              top: targetRect.top - 12,
+              left: targetRect.left - 12,
+              width: targetRect.width + 24,
+              height: targetRect.height + 24,
+              border: '2px solid rgba(90, 154, 168, 0.4)',
+              borderRadius: '16px',
+              zIndex: 50,
+              pointerEvents: 'none',
+              animation: 'pulse-outer 2s ease-in-out infinite',
             }}
           />
         </>
       )}
 
       <div
-        className="absolute bg-white rounded-xl shadow-2xl p-6 transition-all duration-300"
+        className="absolute bg-white rounded-xl shadow-2xl p-6 transition-all duration-300 max-w-sm"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
-          width: '320px',
+          width: '100%',
+          maxWidth: '384px',
           maxHeight: 'calc(100vh - 32px)',
           zIndex: 52,
         }}

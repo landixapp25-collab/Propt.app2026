@@ -11,6 +11,7 @@ export interface DBProperty {
   current_value: number;
   status: PropertyStatus;
   ai_analysis?: any;
+  is_demo?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -83,6 +84,7 @@ export const propertyService = {
       currentValue: p.current_value,
       status: p.status,
       aiAnalysis: p.ai_analysis as AIAnalysis | undefined,
+      isDemo: p.is_demo,
     }));
   },
 
@@ -104,6 +106,10 @@ export const propertyService = {
       insertData.ai_analysis = property.aiAnalysis;
     }
 
+    if (property.isDemo !== undefined) {
+      insertData.is_demo = property.isDemo;
+    }
+
     const { data, error } = await supabase
       .from('properties')
       .insert(insertData)
@@ -121,6 +127,7 @@ export const propertyService = {
       currentValue: data.current_value,
       status: data.status,
       aiAnalysis: data.ai_analysis as AIAnalysis | undefined,
+      isDemo: data.is_demo,
     };
   },
 
@@ -133,6 +140,7 @@ export const propertyService = {
     if (property.currentValue !== undefined) updateData.current_value = property.currentValue;
     if (property.status !== undefined) updateData.status = property.status;
     if (property.aiAnalysis !== undefined) updateData.ai_analysis = property.aiAnalysis;
+    if (property.isDemo !== undefined) updateData.is_demo = property.isDemo;
 
     const { data, error } = await supabase
       .from('properties')
@@ -152,6 +160,7 @@ export const propertyService = {
       currentValue: data.current_value,
       status: data.status,
       aiAnalysis: data.ai_analysis as AIAnalysis | undefined,
+      isDemo: data.is_demo,
     };
   },
 
@@ -162,6 +171,44 @@ export const propertyService = {
       .eq('id', id);
 
     if (error) throw error;
+  },
+
+  async createDemoProperty(): Promise<Property> {
+    const demoProperty = {
+      name: 'Sample Property - 123 Demo Street',
+      purchasePrice: 200000,
+      purchaseDate: new Date().toISOString().split('T')[0],
+      propertyType: 'House' as const,
+      currentValue: 250000,
+      status: 'Stabilized' as const,
+      isDemo: true,
+    };
+
+    return this.create(demoProperty);
+  },
+
+  async deleteDemoProperties(): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+      .from('properties')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('is_demo', true);
+
+    if (error) throw error;
+  },
+
+  async hasDemoProperty(): Promise<boolean> {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('id')
+      .eq('is_demo', true)
+      .maybeSingle();
+
+    if (error) throw error;
+    return !!data;
   },
 };
 

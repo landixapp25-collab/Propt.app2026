@@ -71,6 +71,7 @@ export interface Property {
   currentValue: number | null;
   status: PropertyStatus;
   aiAnalysis?: AIAnalysis;
+  isDemo?: boolean;
 }
 
 export type DealStatus = 'reviewing' | 'offer-made' | 'due-diligence' | 'acquired' | 'rejected';
