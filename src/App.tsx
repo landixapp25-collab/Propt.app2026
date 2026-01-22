@@ -12,11 +12,9 @@ import SavedDeals from './components/SavedDeals';
 import Settings from './components/Settings';
 import BottomNav from './components/BottomNav';
 import NotificationsModal from './components/NotificationsModal';
-import OnboardingTour from './components/OnboardingTour';
 import { Property, Transaction, SavedDeal, Notification } from './types';
 import { supabase } from './lib/supabase';
 import { propertyService, transactionService, savedDealService, notificationService } from './lib/database';
-import { isOnboardingCompleted, resetOnboarding } from './lib/onboarding';
 
 type ViewType = 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile' | 'property-detail' | 'add-property' | 'insights-full';
 
@@ -54,7 +52,6 @@ function App() {
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const [transactionModal, setTransactionModal] = useState<{
     isOpen: boolean;
     propertyId: string;
@@ -81,15 +78,8 @@ function App() {
   useEffect(() => {
     if (user) {
       loadData();
-      checkAndStartOnboarding();
     }
   }, [user]);
-
-  const checkAndStartOnboarding = async () => {
-    if (!isOnboardingCompleted()) {
-      setTimeout(() => setShowOnboarding(true), 500);
-    }
-  };
 
   const loadData = async () => {
     try {
@@ -337,11 +327,6 @@ function App() {
     });
   };
 
-  const handleLaunchTour = () => {
-    resetOnboarding();
-    setShowOnboarding(true);
-  };
-
   const renderContent = () => {
     switch (currentView) {
       case 'dashboard':
@@ -414,7 +399,7 @@ function App() {
         );
 
       case 'profile':
-        return <Settings onLaunchTour={handleLaunchTour} />;
+        return <Settings />;
 
       default:
         return (
@@ -471,40 +456,6 @@ function App() {
           onMarkAsRead={handleMarkNotificationAsRead}
           onMarkAllAsRead={handleMarkAllNotificationsAsRead}
           onDelete={handleDeleteNotification}
-        />
-      )}
-
-      {showOnboarding && (
-        <OnboardingTour
-          onComplete={async () => {
-            setShowOnboarding(false);
-            const hasDemo = await propertyService.hasDemoProperty();
-            if (hasDemo) {
-              const shouldDelete = window.confirm(
-                'Would you like to remove the demo property "123 Demo Avenue"?\n\nYou can now add your own properties.'
-              );
-              if (shouldDelete) {
-                await propertyService.deleteDemoProperties();
-                localStorage.removeItem('propt_demo_property_id');
-                await loadData();
-              }
-            }
-            setCurrentView('properties');
-          }}
-          onNavigate={(view) => setCurrentView(view)}
-          onNavigateToProperty={async (propertyId) => {
-            // Always load fresh data to ensure we have the demo property
-            await loadData();
-            const updatedProperties = await propertyService.getAll();
-            const property = updatedProperties.find(p => p.id === propertyId);
-
-            if (property) {
-              setSelectedProperty(property);
-              setCurrentView('property-detail');
-            } else {
-              console.error('Property not found:', propertyId);
-            }
-          }}
         />
       )}
     </div>

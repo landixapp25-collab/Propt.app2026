@@ -108,7 +108,6 @@ export default function DashboardOverview({
         {hasPropertiesWithTransactions && (
           <div className="flex justify-end">
             <button
-              data-tour="export"
               onClick={handleExportAllClick}
               disabled={isExporting}
               className="flex items-center gap-2 px-5 py-3 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -121,7 +120,7 @@ export default function DashboardOverview({
         )}
 
         {/* Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3" data-tour="metrics">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="bg-[#537d90] rounded-xl p-5 shadow-md">
             <Building2 size={24} className="text-[#FF6B6B] mb-3" />
             <p className="text-2xl font-bold text-[#F8F9FA] mb-1">{formatCurrency(totalValue)}</p>
@@ -152,7 +151,6 @@ export default function DashboardOverview({
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
           <button
-            data-tour="add-property"
             onClick={onNavigateToProperties}
             className="bg-[#537d90] rounded-xl p-6 shadow-md hover:shadow-lg transition-all text-center group border border-gray-100"
           >
@@ -164,7 +162,6 @@ export default function DashboardOverview({
           </button>
 
           <button
-            data-tour="analyze-deal"
             onClick={onNavigateToAnalyze}
             className="bg-[#537d90] rounded-xl p-6 shadow-md hover:shadow-lg transition-all text-center group border border-gray-100"
           >

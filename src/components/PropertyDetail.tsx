@@ -237,7 +237,7 @@ export default function PropertyDetail({
         </div>
 
         {/* Transactions Section */}
-        <div className="bg-[#537d90] rounded-xl p-6 shadow-sm" data-tour="transactions">
+        <div className="bg-[#537d90] rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-[#F8F9FA]">Recent Transactions</h2>
             <div className="flex items-center gap-2">

@@ -458,7 +458,7 @@ export default function AddTransactionModal({
             />
           </div>
 
-          <div data-tour="receipt-upload">
+          <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Receipt (Optional)
             </label>

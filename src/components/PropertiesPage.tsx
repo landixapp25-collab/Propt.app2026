@@ -112,7 +112,6 @@ export default function PropertiesPage({
           </div>
           <button
             onClick={onAddProperty}
-            data-tour="add-property"
             className="flex items-center gap-2 px-4 py-2 bg-[#FF6B6B] text-[#F8F9FA] rounded-lg hover:bg-[#FF5252] transition-colors font-semibold"
           >
             <Plus size={18} />
