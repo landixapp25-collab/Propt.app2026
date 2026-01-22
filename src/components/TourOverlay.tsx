@@ -43,7 +43,7 @@ export default function TourOverlay({
             left = padding;
           } else if (step.id === 'transactions' || step.id === 'receipt-upload') {
             top = 80;
-            left = padding;
+            left = window.innerWidth / 2 - tooltipWidth / 2;
           } else {
             switch (step.position) {
               case 'bottom':
