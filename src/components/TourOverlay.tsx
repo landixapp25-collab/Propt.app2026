@@ -36,36 +36,41 @@ export default function TourOverlay({
           let top = 0;
           let left = 0;
 
-          switch (step.position) {
-            case 'bottom':
-              top = rect.top + rect.height + padding;
-              left = rect.left + rect.width / 2 - tooltipWidth / 2;
-              break;
-            case 'top':
-              top = rect.top - tooltipHeight - padding;
-              left = rect.left + rect.width / 2 - tooltipWidth / 2;
-              break;
-            case 'left':
-              top = rect.top + rect.height / 2 - tooltipHeight / 2;
-              left = rect.left - tooltipWidth - padding;
-              break;
-            case 'right':
-              top = rect.top + rect.height / 2 - tooltipHeight / 2;
-              left = rect.left + rect.width + padding;
-              break;
-            default:
-              top = rect.top + rect.height + padding;
-              left = rect.left + rect.width / 2 - tooltipWidth / 2;
-          }
+          if (step.id === 'dashboard') {
+            top = 120;
+            left = padding;
+          } else {
+            switch (step.position) {
+              case 'bottom':
+                top = rect.top + rect.height + padding;
+                left = rect.left + rect.width / 2 - tooltipWidth / 2;
+                break;
+              case 'top':
+                top = rect.top - tooltipHeight - padding;
+                left = rect.left + rect.width / 2 - tooltipWidth / 2;
+                break;
+              case 'left':
+                top = rect.top + rect.height / 2 - tooltipHeight / 2;
+                left = rect.left - tooltipWidth - padding;
+                break;
+              case 'right':
+                top = rect.top + rect.height / 2 - tooltipHeight / 2;
+                left = rect.left + rect.width + padding;
+                break;
+              default:
+                top = rect.top + rect.height + padding;
+                left = rect.left + rect.width / 2 - tooltipWidth / 2;
+            }
 
-          left = Math.max(padding, Math.min(left, window.innerWidth - tooltipWidth - padding));
+            left = Math.max(padding, Math.min(left, window.innerWidth - tooltipWidth - padding));
 
-          if (top + tooltipHeight > window.innerHeight - padding) {
-            top = Math.max(padding, rect.top - tooltipHeight - padding);
-          }
+            if (top + tooltipHeight > window.innerHeight - padding) {
+              top = Math.max(padding, rect.top - tooltipHeight - padding);
+            }
 
-          if (top < padding) {
-            top = Math.max(padding, Math.min(window.innerHeight / 2 - tooltipHeight / 2, window.innerHeight - tooltipHeight - padding));
+            if (top < padding) {
+              top = Math.max(padding, Math.min(window.innerHeight / 2 - tooltipHeight / 2, window.innerHeight - tooltipHeight - padding));
+            }
           }
 
           setTooltipPosition({ top, left });
@@ -80,6 +85,11 @@ export default function TourOverlay({
         window.removeEventListener('resize', updatePosition);
         window.removeEventListener('scroll', updatePosition);
       };
+    } else {
+      setTooltipPosition({
+        top: window.innerHeight / 2 - 150,
+        left: window.innerWidth / 2 - 160
+      });
     }
   }, [step]);
 
@@ -142,12 +152,11 @@ export default function TourOverlay({
       )}
 
       <div
-        className="absolute bg-white rounded-xl shadow-2xl p-6 transition-all duration-300 max-w-sm"
+        className="absolute bg-white rounded-xl shadow-2xl p-5 transition-all duration-300"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
-          width: '100%',
-          maxWidth: '384px',
+          width: step.id === 'dashboard' ? '280px' : '320px',
           maxHeight: 'calc(100vh - 32px)',
           zIndex: 52,
         }}
