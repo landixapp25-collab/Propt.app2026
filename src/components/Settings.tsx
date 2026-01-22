@@ -1,10 +1,27 @@
+import { useState } from 'react';
 import { User, Mail, LogOut, Bell, HelpCircle, CreditCard, Shield, ChevronRight, FileText, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Logo from './Logo';
 
 export default function Settings() {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Logout error:', error);
+        alert('Failed to log out. Please try again.');
+        setIsLoggingOut(false);
+      }
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('Failed to log out. Please try again.');
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -143,10 +160,13 @@ export default function Settings() {
           </div>
           <button
             onClick={handleLogout}
-            className="w-full px-4 py-4 flex items-center justify-center gap-3 hover:bg-red-50 transition-colors border-b border-red-100"
+            disabled={isLoggingOut}
+            className="w-full px-4 py-4 flex items-center justify-center gap-3 hover:bg-red-50 transition-colors border-b border-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <LogOut size={20} className="text-[#E86C6C]" />
-            <span className="font-semibold text-[#E86C6C]">Log Out</span>
+            <span className="font-semibold text-[#E86C6C]">
+              {isLoggingOut ? 'Logging Out...' : 'Log Out'}
+            </span>
           </button>
           <button className="w-full px-4 py-3 flex items-center justify-center hover:bg-red-50 transition-colors">
             <span className="text-sm text-[#E86C6C]">Delete Account</span>

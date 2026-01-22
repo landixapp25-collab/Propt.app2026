@@ -11,6 +11,7 @@ export default function ProfileView() {
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -84,10 +85,20 @@ export default function ProfileView() {
   };
 
   const handleSignOut = async () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    setError('');
+
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        setError(error.message || 'Failed to sign out');
+        setIsLoggingOut(false);
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to sign out');
+      setIsLoggingOut(false);
     }
   };
 
@@ -140,10 +151,11 @@ export default function ProfileView() {
                     </button>
                     <button
                       onClick={handleSignOut}
-                      className="px-4 py-2 border border-gray-300 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors font-medium flex items-center gap-2"
+                      disabled={isLoggingOut}
+                      className="px-4 py-2 border border-gray-300 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <LogOut size={18} />
-                      Sign Out
+                      {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
                     </button>
                   </div>
                 )}
