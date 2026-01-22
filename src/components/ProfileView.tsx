@@ -91,13 +91,15 @@ export default function ProfileView() {
     setError('');
 
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
       if (error) {
+        console.error('Sign out error:', error);
         setError(error.message || 'Failed to sign out');
         setIsLoggingOut(false);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to sign out');
+      console.error('Sign out exception:', err);
+      setError(err?.message || 'An unexpected error occurred');
       setIsLoggingOut(false);
     }
   };

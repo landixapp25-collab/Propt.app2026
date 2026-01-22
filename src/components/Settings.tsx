@@ -11,15 +11,15 @@ export default function Settings() {
 
     setIsLoggingOut(true);
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
       if (error) {
         console.error('Logout error:', error);
-        alert('Failed to log out. Please try again.');
+        alert(`Failed to log out: ${error.message}`);
         setIsLoggingOut(false);
       }
     } catch (err) {
-      console.error('Logout error:', err);
-      alert('Failed to log out. Please try again.');
+      console.error('Logout exception:', err);
+      alert('An unexpected error occurred. Please try again.');
       setIsLoggingOut(false);
     }
   };
