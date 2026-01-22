@@ -74,9 +74,23 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
       const nextStep = TOUR_STEPS[nextStepIndex];
       console.log('Next step:', nextStep.id);
 
-      // Handle navigation to property detail for transactions step
-      if (nextStep.id === 'transactions' || nextStep.id === 'receipt-upload') {
-        console.log('Attempting to navigate to property detail');
+      // Check if current and next steps need property detail page
+      const currentNeedsPropertyDetail = currentStep.id === 'transactions' || currentStep.id === 'receipt-upload';
+      const nextNeedsPropertyDetail = nextStep.id === 'transactions' || nextStep.id === 'receipt-upload';
+
+      console.log('Current needs property detail:', currentNeedsPropertyDetail);
+      console.log('Next needs property detail:', nextNeedsPropertyDetail);
+
+      // If both current and next are property detail steps, just advance without navigating
+      if (currentNeedsPropertyDetail && nextNeedsPropertyDetail) {
+        console.log('Staying on property detail page, just advancing step');
+        setCurrentStepIndex(nextStepIndex);
+        return;
+      }
+
+      // Only navigate to property detail if moving FROM a non-property-detail step TO a property-detail step
+      if (nextNeedsPropertyDetail && !currentNeedsPropertyDetail) {
+        console.log('Navigating to property detail page');
         if (onNavigateToProperty) {
           const demoPropertyId = localStorage.getItem('propt_demo_property_id');
           console.log('Demo property ID from localStorage:', demoPropertyId);
