@@ -22,6 +22,8 @@ export default function TourOverlay({
   const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
+  const isCompact = step.id === 'dashboard' || step.id === 'add-property';
+
   useEffect(() => {
     if (step.targetSelector) {
       const updatePosition = () => {
@@ -36,7 +38,7 @@ export default function TourOverlay({
           let top = 0;
           let left = 0;
 
-          if (step.id === 'dashboard') {
+          if (step.id === 'dashboard' || step.id === 'add-property') {
             top = window.innerHeight - 280;
             left = padding;
           } else {
@@ -156,8 +158,8 @@ export default function TourOverlay({
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
-          width: step.id === 'dashboard' ? '240px' : '320px',
-          padding: step.id === 'dashboard' ? '12px' : '20px',
+          width: isCompact ? '240px' : '320px',
+          padding: isCompact ? '12px' : '20px',
           maxHeight: 'calc(100vh - 32px)',
           zIndex: 52,
         }}
@@ -166,15 +168,15 @@ export default function TourOverlay({
           onClick={onSkip}
           className="absolute text-gray-400 hover:text-gray-600 transition-colors"
           style={{
-            top: step.id === 'dashboard' ? '8px' : '16px',
-            right: step.id === 'dashboard' ? '8px' : '16px'
+            top: isCompact ? '8px' : '16px',
+            right: isCompact ? '8px' : '16px'
           }}
         >
-          <X className={step.id === 'dashboard' ? 'w-4 h-4' : 'w-5 h-5'} />
+          <X className={isCompact ? 'w-4 h-4' : 'w-5 h-5'} />
         </button>
 
-        <div className={step.id === 'dashboard' ? 'mb-2' : 'mb-4'}>
-          <div className={`flex items-center justify-center mb-2 ${step.id === 'dashboard' ? 'gap-1' : 'gap-2'}`}>
+        <div className={isCompact ? 'mb-2' : 'mb-4'}>
+          <div className={`flex items-center justify-center mb-2 ${isCompact ? 'gap-1' : 'gap-2'}`}>
             {Array.from({ length: totalSteps }).map((_, i) => {
               const isCompleted = i < currentStepIndex;
               const isCurrent = i === currentStepIndex;
@@ -185,8 +187,8 @@ export default function TourOverlay({
                   key={i}
                   className="rounded-full transition-all"
                   style={{
-                    width: step.id === 'dashboard' ? '8px' : '12px',
-                    height: step.id === 'dashboard' ? '8px' : '12px',
+                    width: isCompact ? '8px' : '12px',
+                    height: isCompact ? '8px' : '12px',
                     backgroundColor: isCompleted || isCurrent ? '#5a9aa8' : '#D1D5DB',
                     border: isCurrent ? '2px solid #5a9aa8' : 'none',
                     outline: isCurrent ? '2px solid white' : 'none',
@@ -196,40 +198,40 @@ export default function TourOverlay({
               );
             })}
           </div>
-          <p className={`font-medium text-center ${step.id === 'dashboard' ? 'text-xs' : 'text-sm'}`} style={{ color: '#5a9aa8' }}>
+          <p className={`font-medium text-center ${isCompact ? 'text-xs' : 'text-sm'}`} style={{ color: '#5a9aa8' }}>
             Step {currentStepIndex + 1} of {totalSteps}
           </p>
         </div>
 
-        <h3 className={`font-bold ${step.id === 'dashboard' ? 'text-base mb-2' : 'text-xl mb-3'}`} style={{ color: '#1F2937' }}>
+        <h3 className={`font-bold ${isCompact ? 'text-base mb-2' : 'text-xl mb-3'}`} style={{ color: '#1F2937' }}>
           {step.title}
         </h3>
 
-        <p className={`text-gray-600 leading-relaxed ${step.id === 'dashboard' ? 'text-sm mb-3' : 'mb-6'}`}>
+        <p className={`text-gray-600 leading-relaxed ${isCompact ? 'text-sm mb-3' : 'mb-6'}`}>
           {step.message}
         </p>
 
-        <div className={`flex ${step.id === 'dashboard' ? 'gap-2' : 'gap-3'}`}>
+        <div className={`flex ${isCompact ? 'gap-2' : 'gap-3'}`}>
           {currentStepIndex > 0 && (
             <button
               onClick={onBack}
               className={`flex items-center gap-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors ${
-                step.id === 'dashboard' ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'
+                isCompact ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'
               }`}
             >
-              <ArrowLeft className={step.id === 'dashboard' ? 'w-3 h-3' : 'w-4 h-4'} />
+              <ArrowLeft className={isCompact ? 'w-3 h-3' : 'w-4 h-4'} />
               Back
             </button>
           )}
           <button
             onClick={onNext}
             className={`flex-1 flex items-center justify-center gap-2 rounded-lg text-white font-semibold transition-all hover:opacity-90 ${
-              step.id === 'dashboard' ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'
+              isCompact ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'
             }`}
             style={{ backgroundColor: '#5a9aa8' }}
           >
             {currentStepIndex === totalSteps - 1 ? 'Finish' : 'Next'}
-            {currentStepIndex < totalSteps - 1 && <ArrowRight className={step.id === 'dashboard' ? 'w-3 h-3' : 'w-4 h-4'} />}
+            {currentStepIndex < totalSteps - 1 && <ArrowRight className={isCompact ? 'w-3 h-3' : 'w-4 h-4'} />}
           </button>
         </div>
       </div>
