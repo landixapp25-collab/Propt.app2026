@@ -12,11 +12,13 @@ import SavedDeals from './components/SavedDeals';
 import Settings from './components/Settings';
 import BottomNav from './components/BottomNav';
 import NotificationsModal from './components/NotificationsModal';
+import LandingPage from './components/LandingPage';
 import { Property, Transaction, SavedDeal, Notification } from './types';
 import { supabase } from './lib/supabase';
 import { propertyService, transactionService, savedDealService, notificationService } from './lib/database';
 
-type ViewType = 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile' | 'property-detail' | 'add-property' | 'insights-full';
+type ViewType = 'landing' | 'login' | 'signup' | 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile' | 'property-detail' | 'add-property' | 'insights-full';
+type AuthMode = 'login' | 'signup';
 
 interface PortfolioInsights {
   overallHealth: 'excellent' | 'good' | 'fair' | 'poor';
@@ -43,7 +45,8 @@ interface PortfolioInsights {
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentView, setCurrentView] = useState<ViewType>('dashboard');
+  const [currentView, setCurrentView] = useState<ViewType>('landing');
+  const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [properties, setProperties] = useState<Property[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [savedDeals, setSavedDeals] = useState<SavedDeal[]>([]);
@@ -65,11 +68,19 @@ function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        setCurrentView('dashboard');
+      }
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('landing');
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -427,7 +438,37 @@ function App() {
   }
 
   if (!user) {
-    return <AuthForm onAuth={() => {}} />;
+    if (currentView === 'landing') {
+      return (
+        <LandingPage
+          onNavigateToSignup={() => {
+            setAuthMode('signup');
+            setCurrentView('signup');
+          }}
+          onNavigateToLogin={() => {
+            setAuthMode('login');
+            setCurrentView('login');
+          }}
+        />
+      );
+    }
+
+    if (currentView === 'login' || currentView === 'signup') {
+      return <AuthForm onAuth={() => {}} mode={authMode} />;
+    }
+
+    return (
+      <LandingPage
+        onNavigateToSignup={() => {
+          setAuthMode('signup');
+          setCurrentView('signup');
+        }}
+        onNavigateToLogin={() => {
+          setAuthMode('login');
+          setCurrentView('login');
+        }}
+      />
+    );
   }
 
   return (

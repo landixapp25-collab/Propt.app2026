@@ -5,6 +5,7 @@ import Logo from './Logo';
 
 interface AuthFormProps {
   onAuth: () => void;
+  mode?: 'login' | 'signup';
 }
 
 interface PasswordRequirements {
@@ -14,8 +15,8 @@ interface PasswordRequirements {
   hasNumber: boolean;
 }
 
-export default function AuthForm({ onAuth }: AuthFormProps) {
-  const [isSignUp, setIsSignUp] = useState(false);
+export default function AuthForm({ onAuth, mode = 'login' }: AuthFormProps) {
+  const [isSignUp, setIsSignUp] = useState(mode === 'signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
