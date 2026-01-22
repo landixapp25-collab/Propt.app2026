@@ -20,11 +20,11 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
 
     try {
       const demoProperty = await propertyService.create({
-        name: '2 Kitchener Street',
-        purchasePrice: 68000,
-        purchaseDate: '2024-03-09',
+        name: '123 Demo Avenue',
+        purchasePrice: 150000,
+        purchaseDate: '2024-01-15',
         propertyType: 'House',
-        currentValue: 95000,
+        currentValue: 180000,
         status: 'Stabilized',
         isDemo: true,
       });
