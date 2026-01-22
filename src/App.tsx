@@ -471,7 +471,10 @@ function App() {
       )}
 
       {showOnboarding && (
-        <OnboardingTour onComplete={() => setShowOnboarding(false)} />
+        <OnboardingTour
+          onComplete={() => setShowOnboarding(false)}
+          onNavigate={(view) => setCurrentView(view)}
+        />
       )}
     </div>
   );

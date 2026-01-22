@@ -5,6 +5,7 @@ export interface TourStep {
   targetSelector?: string;
   action?: 'highlight' | 'open-modal';
   position?: 'top' | 'bottom' | 'left' | 'right';
+  navigateTo?: 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile';
 }
 
 export const TOUR_STEPS: TourStep[] = [
@@ -14,6 +15,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'Your dashboard shows portfolio value, equity, and capital deployed at a glance',
     targetSelector: '[data-tour="metrics"]',
     position: 'bottom',
+    navigateTo: 'dashboard',
   },
   {
     id: 'add-property',
@@ -21,6 +23,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'Start by adding your first property. Click here to begin tracking income and expenses',
     targetSelector: '[data-tour="add-property"]',
     position: 'top',
+    navigateTo: 'properties',
   },
   {
     id: 'transactions',
@@ -28,6 +31,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'Add income (rent) and expenses (materials, labour, etc.) to track your cashflow',
     targetSelector: '[data-tour="transactions"]',
     position: 'top',
+    navigateTo: 'dashboard',
   },
   {
     id: 'receipt-upload',
@@ -35,6 +39,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'Snap a photo of any receipt - our AI automatically extracts vendor, amount, and date',
     targetSelector: '[data-tour="receipt-upload"]',
     position: 'top',
+    navigateTo: 'dashboard',
   },
   {
     id: 'analyze-deal',
@@ -42,6 +47,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'Run deal analysis on potential properties using our BRRR calculator',
     targetSelector: '[data-tour="analyze-deal"]',
     position: 'top',
+    navigateTo: 'analyze-deal',
   },
   {
     id: 'export',
@@ -49,6 +55,7 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'When tax time comes, export everything in one click - all transactions, receipts, and summaries organized for your accountant',
     targetSelector: '[data-tour="export"]',
     position: 'top',
+    navigateTo: 'profile',
   },
   {
     id: 'add-to-home',

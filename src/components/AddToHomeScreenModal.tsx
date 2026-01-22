@@ -143,18 +143,39 @@ export default function AddToHomeScreenModal({ onDone, onSkip }: AddToHomeScreen
         </p>
       </div>
 
-      <div className="bg-gray-50 rounded-xl p-6 text-center">
-        <p className="text-gray-700 mb-4">
-          Open this link on your phone for the best experience:
+      <div className="bg-gray-50 rounded-xl p-6">
+        <p className="text-gray-700 mb-4 text-center">
+          For the best experience, open Propt on your mobile device:
         </p>
-        <div className="bg-white rounded-lg p-3 border border-gray-200">
-          <code className="text-sm font-mono" style={{ color: '#5a9aa8' }}>
-            {window.location.origin}
-          </code>
+
+        <div className="space-y-3">
+          <div className="flex gap-3 items-start">
+            <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: '#5a9aa8' }}>
+              1
+            </div>
+            <p className="text-gray-700 text-sm">
+              Visit this website on your phone's browser (Safari or Chrome)
+            </p>
+          </div>
+
+          <div className="flex gap-3 items-start">
+            <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: '#5a9aa8' }}>
+              2
+            </div>
+            <p className="text-gray-700 text-sm">
+              Follow your device's instructions to add Propt to your home screen
+            </p>
+          </div>
+
+          <div className="flex gap-3 items-start">
+            <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: '#5a9aa8' }}>
+              3
+            </div>
+            <p className="text-gray-700 text-sm">
+              Launch Propt from your home screen for a native app experience
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-gray-500 mt-4">
-          Or bookmark this page for easy access from your desktop
-        </p>
       </div>
     </div>
   );

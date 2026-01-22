@@ -6,9 +6,10 @@ import { TOUR_STEPS, markOnboardingCompleted } from '../lib/onboarding';
 
 interface OnboardingTourProps {
   onComplete: () => void;
+  onNavigate?: (view: 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile') => void;
 }
 
-export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
+export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTourProps) {
   const [showWelcome, setShowWelcome] = useState(true);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [showAddToHome, setShowAddToHome] = useState(false);
@@ -53,16 +54,20 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
     if (currentStepIndex >= 0 && currentStepIndex < TOUR_STEPS.length) {
       const currentStep = TOUR_STEPS[currentStepIndex];
 
+      if (currentStep.navigateTo && onNavigate) {
+        onNavigate(currentStep.navigateTo);
+      }
+
       if (currentStep.targetSelector) {
         setTimeout(() => {
           const element = document.querySelector(currentStep.targetSelector!);
           if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
           }
-        }, 100);
+        }, 300);
       }
     }
-  }, [currentStepIndex]);
+  }, [currentStepIndex, onNavigate]);
 
   if (showWelcome) {
     return <WelcomeModal onStartTour={handleStartTour} onSkip={handleSkipTour} />;
