@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import WelcomeModal from './WelcomeModal';
 import TourOverlay from './TourOverlay';
 import AddToHomeScreenModal from './AddToHomeScreenModal';
-import { TOUR_STEPS, markOnboardingCompleted } from '../lib/onboarding';
+import { TOUR_STEPS, markOnboardingCompleted, saveDemoPropertyId } from '../lib/onboarding';
+import { propertyService } from '../lib/database';
 
 interface OnboardingTourProps {
   onComplete: () => void;
@@ -14,8 +15,27 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [showAddToHome, setShowAddToHome] = useState(false);
 
-  const handleStartTour = () => {
+  const handleStartTour = async () => {
     setShowWelcome(false);
+
+    try {
+      const demoProperty = await propertyService.create({
+        name: '2 Kitchener Street',
+        purchasePrice: 68000,
+        purchaseDate: '2024-03-09',
+        propertyType: 'House',
+        currentValue: 95000,
+        status: 'Stabilized',
+        isDemo: true,
+      });
+
+      if (demoProperty?.id) {
+        saveDemoPropertyId(demoProperty.id);
+      }
+    } catch (error) {
+      console.error('Failed to create demo property:', error);
+    }
+
     const firstStep = TOUR_STEPS[0];
     if (firstStep.navigateTo && onNavigate) {
       onNavigate(firstStep.navigateTo);

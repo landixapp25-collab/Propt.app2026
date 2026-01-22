@@ -105,3 +105,17 @@ export function getElementPosition(selector: string): { top: number; left: numbe
     height: rect.height,
   };
 }
+
+export const DEMO_PROPERTY_STORAGE_KEY = 'propt_demo_property_id';
+
+export function saveDemoPropertyId(propertyId: string): void {
+  localStorage.setItem(DEMO_PROPERTY_STORAGE_KEY, propertyId);
+}
+
+export function getDemoPropertyId(): string | null {
+  return localStorage.getItem(DEMO_PROPERTY_STORAGE_KEY);
+}
+
+export function clearDemoPropertyId(): void {
+  localStorage.removeItem(DEMO_PROPERTY_STORAGE_KEY);
+}

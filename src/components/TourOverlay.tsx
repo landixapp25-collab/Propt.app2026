@@ -22,7 +22,7 @@ export default function TourOverlay({
   const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
-  const isCompact = step.id === 'dashboard' || step.id === 'add-property';
+  const isCompact = step.id === 'dashboard' || step.id === 'add-property' || step.id === 'transactions';
 
   useEffect(() => {
     if (step.targetSelector) {
@@ -38,7 +38,7 @@ export default function TourOverlay({
           let top = 0;
           let left = 0;
 
-          if (step.id === 'dashboard' || step.id === 'add-property') {
+          if (step.id === 'dashboard' || step.id === 'add-property' || step.id === 'transactions') {
             top = window.innerHeight - 280;
             left = padding;
           } else {
