@@ -12,7 +12,7 @@ export default function Settings() {
     setIsLoggingOut(true);
     try {
       const { error } = await supabase.auth.signOut({ scope: 'local' });
-      if (error) {
+      if (error && !error.message.includes('Auth session missing')) {
         console.error('Logout error:', error);
         alert(`Failed to log out: ${error.message}`);
         setIsLoggingOut(false);
