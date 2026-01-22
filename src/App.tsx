@@ -93,8 +93,16 @@ function App() {
       if (!hasRealProperties) {
         const hasDemo = await propertyService.hasDemoProperty();
         if (!hasDemo) {
-          await propertyService.createDemoProperty();
+          const demoProperty = await propertyService.createDemoProperty();
           await loadData();
+          if (demoProperty?.id) {
+            localStorage.setItem('propt_demo_property_id', demoProperty.id);
+          }
+        } else {
+          const demoProperty = allProperties.find(p => p.isDemo);
+          if (demoProperty?.id) {
+            localStorage.setItem('propt_demo_property_id', demoProperty.id);
+          }
         }
       }
 
@@ -501,8 +509,15 @@ function App() {
             }
           }}
           onNavigate={(view) => setCurrentView(view)}
-          onNavigateToProperty={(propertyId) => {
-            const property = properties.find(p => p.id === propertyId);
+          onNavigateToProperty={async (propertyId) => {
+            let property = properties.find(p => p.id === propertyId);
+
+            if (!property) {
+              await loadData();
+              const updatedProperties = await propertyService.getAll();
+              property = updatedProperties.find(p => p.id === propertyId);
+            }
+
             if (property) {
               setSelectedProperty(property);
               setCurrentView('property-detail');
