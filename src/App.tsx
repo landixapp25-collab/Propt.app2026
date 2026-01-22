@@ -87,25 +87,6 @@ function App() {
 
   const checkAndStartOnboarding = async () => {
     if (!isOnboardingCompleted()) {
-      const allProperties = await propertyService.getAll();
-      const hasRealProperties = allProperties.some(p => !p.isDemo);
-
-      if (!hasRealProperties) {
-        const hasDemo = await propertyService.hasDemoProperty();
-        if (!hasDemo) {
-          const demoProperty = await propertyService.createDemoProperty();
-          await loadData();
-          if (demoProperty?.id) {
-            localStorage.setItem('propt_demo_property_id', demoProperty.id);
-          }
-        } else {
-          const demoProperty = allProperties.find(p => p.isDemo);
-          if (demoProperty?.id) {
-            localStorage.setItem('propt_demo_property_id', demoProperty.id);
-          }
-        }
-      }
-
       setTimeout(() => setShowOnboarding(true), 500);
     }
   };
@@ -497,10 +478,11 @@ function App() {
         <OnboardingTour
           onComplete={async () => {
             setShowOnboarding(false);
+            await loadData();
             const hasDemo = await propertyService.hasDemoProperty();
             if (hasDemo) {
               const shouldDelete = window.confirm(
-                'Would you like to remove the demo property "Sample Property - 123 Demo Street"?\n\nYou can now add your own properties.'
+                'Would you like to remove the demo property "123 Demo Avenue"?\n\nYou can now add your own properties.'
               );
               if (shouldDelete) {
                 await propertyService.deleteDemoProperties();

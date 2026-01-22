@@ -20,6 +20,8 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
     setShowWelcome(false);
 
     try {
+      await propertyService.deleteDemoProperties();
+
       const demoProperty = await propertyService.create({
         name: '123 Demo Avenue',
         purchasePrice: 150000,
@@ -66,10 +68,10 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
       if (nextStep.id === 'transactions') {
         const demoPropertyId = localStorage.getItem('propt_demo_property_id');
         if (demoPropertyId && onNavigateToProperty) {
-          onNavigateToProperty(demoPropertyId);
+          setCurrentStepIndex(nextStepIndex);
           setTimeout(() => {
-            setCurrentStepIndex(nextStepIndex);
-          }, 300);
+            onNavigateToProperty(demoPropertyId);
+          }, 100);
           return;
         }
       }
@@ -91,6 +93,15 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
     if (currentStepIndex > 0) {
       const prevStepIndex = currentStepIndex - 1;
       const prevStep = TOUR_STEPS[prevStepIndex];
+      const currentStep = TOUR_STEPS[currentStepIndex];
+
+      if (currentStep.id === 'transactions' && prevStep.navigateTo && onNavigate) {
+        onNavigate(prevStep.navigateTo);
+        setTimeout(() => {
+          setCurrentStepIndex(prevStepIndex);
+        }, 300);
+        return;
+      }
 
       if (prevStep.navigateTo && onNavigate) {
         onNavigate(prevStep.navigateTo);
