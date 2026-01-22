@@ -12,9 +12,11 @@ import SavedDeals from './components/SavedDeals';
 import Settings from './components/Settings';
 import BottomNav from './components/BottomNav';
 import NotificationsModal from './components/NotificationsModal';
+import OnboardingTour from './components/OnboardingTour';
 import { Property, Transaction, SavedDeal, Notification } from './types';
 import { supabase } from './lib/supabase';
 import { propertyService, transactionService, savedDealService, notificationService } from './lib/database';
+import { isOnboardingCompleted, resetOnboarding } from './lib/onboarding';
 
 type ViewType = 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile' | 'property-detail' | 'add-property' | 'insights-full';
 
@@ -52,6 +54,7 @@ function App() {
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [transactionModal, setTransactionModal] = useState<{
     isOpen: boolean;
     propertyId: string;
@@ -78,6 +81,9 @@ function App() {
   useEffect(() => {
     if (user) {
       loadData();
+      if (!isOnboardingCompleted()) {
+        setTimeout(() => setShowOnboarding(true), 500);
+      }
     }
   }, [user]);
 
@@ -327,6 +333,11 @@ function App() {
     });
   };
 
+  const handleLaunchTour = () => {
+    resetOnboarding();
+    setShowOnboarding(true);
+  };
+
   const renderContent = () => {
     switch (currentView) {
       case 'dashboard':
@@ -399,7 +410,7 @@ function App() {
         );
 
       case 'profile':
-        return <Settings />;
+        return <Settings onLaunchTour={handleLaunchTour} />;
 
       default:
         return (
@@ -457,6 +468,10 @@ function App() {
           onMarkAllAsRead={handleMarkAllNotificationsAsRead}
           onDelete={handleDeleteNotification}
         />
+      )}
+
+      {showOnboarding && (
+        <OnboardingTour onComplete={() => setShowOnboarding(false)} />
       )}
     </div>
   );

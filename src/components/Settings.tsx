@@ -1,8 +1,12 @@
-import { User, Mail, LogOut, Bell, HelpCircle, CreditCard, Shield, ChevronRight, FileText, Crown } from 'lucide-react';
+import { User, Mail, LogOut, Bell, HelpCircle, CreditCard, Shield, ChevronRight, FileText, Crown, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Logo from './Logo';
 
-export default function Settings() {
+interface SettingsProps {
+  onLaunchTour?: () => void;
+}
+
+export default function Settings({ onLaunchTour }: SettingsProps) {
   const handleLogout = async () => {
     await supabase.auth.signOut();
   };
@@ -114,6 +118,16 @@ export default function Settings() {
           <div className="px-4 py-3 bg-[#537d90]">
             <h3 className="font-semibold text-[#F8F9FA] text-sm">HELP & SUPPORT</h3>
           </div>
+          {onLaunchTour && (
+            <button
+              onClick={onLaunchTour}
+              className="w-full px-4 py-4 flex items-center gap-3 hover:bg-[#647d8f] transition-colors border-b border-gray-600"
+            >
+              <Sparkles size={20} className="text-[#5a9aa8]" />
+              <span className="flex-1 text-left text-[#F8F9FA] font-medium">View App Tour</span>
+              <ChevronRight size={20} className="text-gray-400" />
+            </button>
+          )}
           <button className="w-full px-4 py-4 flex items-center gap-3 hover:bg-[#647d8f] transition-colors border-b border-gray-600">
             <HelpCircle size={20} className="text-gray-600" />
             <span className="flex-1 text-left text-[#F8F9FA] font-medium">Help Center</span>
