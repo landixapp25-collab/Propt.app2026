@@ -20,8 +20,10 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
     setShowWelcome(false);
 
     try {
+      // Delete existing demo properties
       await propertyService.deleteDemoProperties();
 
+      // Create new demo property
       const demoProperty = await propertyService.create({
         name: '123 Demo Avenue',
         purchasePrice: 150000,
@@ -32,13 +34,18 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
         isDemo: true,
       });
 
+      // Save the demo property ID to localStorage
       if (demoProperty?.id) {
         saveDemoPropertyId(demoProperty.id);
+        console.log('Demo property created with ID:', demoProperty.id);
+      } else {
+        console.error('Failed to create demo property - no ID returned');
       }
     } catch (error) {
       console.error('Failed to create demo property:', error);
     }
 
+    // Navigate to first step
     const firstStep = TOUR_STEPS[0];
     if (firstStep.navigateTo && onNavigate) {
       onNavigate(firstStep.navigateTo);
@@ -55,6 +62,7 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
 
   const handleNext = () => {
     const currentStep = TOUR_STEPS[currentStepIndex];
+    console.log('handleNext called, current step:', currentStep.id);
 
     if (currentStep.id === 'add-to-home') {
       setShowAddToHome(true);
@@ -64,24 +72,37 @@ export default function OnboardingTour({ onComplete, onNavigate, onNavigateToPro
     if (currentStepIndex < TOUR_STEPS.length - 1) {
       const nextStepIndex = currentStepIndex + 1;
       const nextStep = TOUR_STEPS[nextStepIndex];
+      console.log('Next step:', nextStep.id);
 
-      if (nextStep.id === 'transactions') {
-        const demoPropertyId = localStorage.getItem('propt_demo_property_id');
-        if (demoPropertyId && onNavigateToProperty) {
-          onNavigateToProperty(demoPropertyId);
-          setTimeout(() => {
-            setCurrentStepIndex(nextStepIndex);
-          }, 400);
-          return;
+      // Handle navigation to property detail for transactions step
+      if (nextStep.id === 'transactions' || nextStep.id === 'receipt-upload') {
+        console.log('Attempting to navigate to property detail');
+        if (onNavigateToProperty) {
+          const demoPropertyId = localStorage.getItem('propt_demo_property_id');
+          console.log('Demo property ID from localStorage:', demoPropertyId);
+          if (demoPropertyId) {
+            console.log('Calling onNavigateToProperty with ID:', demoPropertyId);
+            onNavigateToProperty(demoPropertyId);
+            setTimeout(() => {
+              setCurrentStepIndex(nextStepIndex);
+            }, 500);
+            return;
+          } else {
+            console.error('No demo property ID found in localStorage');
+          }
+        } else {
+          console.error('onNavigateToProperty callback is not defined');
         }
       }
 
       if (nextStep.navigateTo && onNavigate) {
+        console.log('Navigating to view:', nextStep.navigateTo);
         onNavigate(nextStep.navigateTo);
         setTimeout(() => {
           setCurrentStepIndex(nextStepIndex);
         }, 300);
       } else {
+        console.log('No navigation needed, just updating step');
         setCurrentStepIndex(nextStepIndex);
       }
     } else {

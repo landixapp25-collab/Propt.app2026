@@ -493,17 +493,16 @@ function App() {
           }}
           onNavigate={(view) => setCurrentView(view)}
           onNavigateToProperty={async (propertyId) => {
-            let property = properties.find(p => p.id === propertyId);
-
-            if (!property) {
-              await loadData();
-              const updatedProperties = await propertyService.getAll();
-              property = updatedProperties.find(p => p.id === propertyId);
-            }
+            // Always load fresh data to ensure we have the demo property
+            await loadData();
+            const updatedProperties = await propertyService.getAll();
+            const property = updatedProperties.find(p => p.id === propertyId);
 
             if (property) {
               setSelectedProperty(property);
               setCurrentView('property-detail');
+            } else {
+              console.error('Property not found:', propertyId);
             }
           }}
         />
