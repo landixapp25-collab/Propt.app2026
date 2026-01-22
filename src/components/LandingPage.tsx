@@ -79,7 +79,7 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
                 Property Finance for Independent Developers
               </h1>
               <p className="text-xl text-gray-300 mb-8">
-                Stop using spreadsheets. Built for developers doing 1-10 deals a year without a finance team.
+                Stop using spreadsheets. Built for solo developers and small teams without dedicated finance staff.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
@@ -153,9 +153,9 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
               <div className="w-14 h-14 bg-[#FF6B6B] bg-opacity-20 rounded-full flex items-center justify-center mb-4">
                 <TrendingUp size={28} className="text-[#FF6B6B]" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">1-10 Deals Per Year</h3>
+              <h3 className="text-xl font-bold text-white mb-3">Solo Developers & Small Teams</h3>
               <p className="text-gray-300">
-                Managing multiple projects without dedicated finance staff
+                Managing properties without dedicated finance staff
               </p>
             </div>
 
@@ -357,7 +357,7 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span>Up to 15 properties</span>
+                  <span>Up to 6 properties</span>
                 </li>
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
