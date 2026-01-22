@@ -31,7 +31,6 @@ export const TOUR_STEPS: TourStep[] = [
     message: 'Add income (rent) and expenses (materials, labour, etc.) to track your cashflow',
     targetSelector: '[data-tour="transactions"]',
     position: 'top',
-    navigateTo: 'dashboard',
   },
   {
     id: 'receipt-upload',

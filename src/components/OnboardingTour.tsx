@@ -8,9 +8,10 @@ import { propertyService } from '../lib/database';
 interface OnboardingTourProps {
   onComplete: () => void;
   onNavigate?: (view: 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile') => void;
+  onNavigateToProperty?: (propertyId: string) => void;
 }
 
-export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTourProps) {
+export default function OnboardingTour({ onComplete, onNavigate, onNavigateToProperty }: OnboardingTourProps) {
   const [showWelcome, setShowWelcome] = useState(true);
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [showAddToHome, setShowAddToHome] = useState(false);
@@ -61,6 +62,17 @@ export default function OnboardingTour({ onComplete, onNavigate }: OnboardingTou
     if (currentStepIndex < TOUR_STEPS.length - 1) {
       const nextStepIndex = currentStepIndex + 1;
       const nextStep = TOUR_STEPS[nextStepIndex];
+
+      if (nextStep.id === 'transactions') {
+        const demoPropertyId = localStorage.getItem('propt_demo_property_id');
+        if (demoPropertyId && onNavigateToProperty) {
+          onNavigateToProperty(demoPropertyId);
+          setTimeout(() => {
+            setCurrentStepIndex(nextStepIndex);
+          }, 300);
+          return;
+        }
+      }
 
       if (nextStep.navigateTo && onNavigate) {
         onNavigate(nextStep.navigateTo);

@@ -501,6 +501,13 @@ function App() {
             }
           }}
           onNavigate={(view) => setCurrentView(view)}
+          onNavigateToProperty={(propertyId) => {
+            const property = properties.find(p => p.id === propertyId);
+            if (property) {
+              setSelectedProperty(property);
+              setCurrentView('property-detail');
+            }
+          }}
         />
       )}
     </div>
