@@ -303,71 +303,89 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
           <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
             Simple, Transparent Pricing
           </h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Free Plan */}
             <div className="bg-[#2a3f52] rounded-xl p-8 border border-gray-700">
-              <h3 className="text-2xl font-bold text-white mb-2">Free Plan</h3>
-              <div className="text-4xl font-bold text-white mb-6">£0</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Free</h3>
+              <div className="text-4xl font-bold text-white mb-6">£0<span className="text-base text-gray-300">/month</span></div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-3 text-gray-300">
                   <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
-                  <span>Track up to 3 properties</span>
+                  <span>1 property</span>
                 </li>
                 <li className="flex items-start gap-3 text-gray-300">
                   <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
-                  <span>50 receipts per month</span>
+                  <span>10 transactions per month</span>
                 </li>
                 <li className="flex items-start gap-3 text-gray-300">
                   <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
-                  <span>Basic reporting</span>
+                  <span>Manual receipt upload</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>BRRR calculator access</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Basic dashboard</span>
                 </li>
               </ul>
               <button
                 onClick={onNavigateToSignup}
-                className="w-full py-3 bg-transparent border-2 border-gray-600 text-white rounded-lg font-semibold hover:border-[#5a9aa8] transition-colors"
+                className="w-full py-3 bg-transparent border-2 border-[#4ECDC4] text-[#4ECDC4] rounded-lg font-semibold hover:bg-[#4ECDC4] hover:text-white transition-colors"
               >
                 Start Free
               </button>
             </div>
 
-            <div className="bg-gradient-to-br from-[#FF6B6B] to-[#FFB84D] rounded-xl p-8 relative overflow-hidden shadow-2xl">
+            {/* Pro Plan */}
+            <div className="bg-gradient-to-br from-[#FF6B6B] to-[#FFB84D] rounded-xl p-8 relative overflow-hidden shadow-2xl transform scale-105">
               <div className="absolute top-4 right-4 bg-white text-[#FF6B6B] px-3 py-1 rounded-full text-xs font-bold">
                 73 spots left
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">Pro Plan</h3>
-              <div className="flex items-baseline gap-2 mb-6">
+              <div className="flex items-baseline gap-2 mb-2">
                 <span className="text-4xl font-bold text-white">£12</span>
                 <span className="text-xl text-white line-through opacity-60">£24</span>
                 <span className="text-white">/month</span>
               </div>
               <div className="bg-white bg-opacity-20 rounded-lg px-3 py-2 mb-6">
-                <p className="text-white text-sm font-semibold">
+                <p className="text-white text-xs font-semibold">
                   Founder pricing - first 100 users, locked forever
                 </p>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span className="font-semibold">Unlimited properties</span>
+                  <span>Up to 15 properties</span>
                 </li>
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span className="font-semibold">Unlimited receipts</span>
+                  <span>Unlimited transactions</span>
                 </li>
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span className="font-semibold">AI receipt extraction</span>
+                  <span>100 AI receipt extractions/mo</span>
                 </li>
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span className="font-semibold">BRRR deal analyzer</span>
+                  <span>Full tax pack exports</span>
                 </li>
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span className="font-semibold">Tax pack exports</span>
+                  <span>Date range filtering</span>
                 </li>
                 <li className="flex items-start gap-3 text-white">
                   <Check size={20} className="mt-0.5 flex-shrink-0" />
-                  <span className="font-semibold">Priority support</span>
+                  <span>BRRR deal analyzer</span>
+                </li>
+                <li className="flex items-start gap-3 text-white">
+                  <Check size={20} className="mt-0.5 flex-shrink-0" />
+                  <span>Financial summaries & reports</span>
+                </li>
+                <li className="flex items-start gap-3 text-white">
+                  <Check size={20} className="mt-0.5 flex-shrink-0" />
+                  <span>Priority email support</span>
                 </li>
               </ul>
               <button
@@ -375,6 +393,56 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
                 className="w-full py-3 bg-white text-[#FF6B6B] rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
               >
                 Start Pro Trial
+              </button>
+              <p className="text-white text-xs text-center mt-3 opacity-80">14-day trial</p>
+            </div>
+
+            {/* Business Plan */}
+            <div className="bg-[#2a3f52] rounded-xl p-8 border border-gray-700 relative">
+              <div className="absolute top-4 right-4 bg-gray-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                Coming Soon
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Business</h3>
+              <div className="text-4xl font-bold text-white mb-6">£49<span className="text-base text-gray-300">/month</span></div>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Unlimited properties</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Unlimited transactions</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Unlimited AI receipt extraction</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Everything in Pro</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Multi-user access</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Accountant collaboration</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Custom export formats</span>
+                </li>
+                <li className="flex items-start gap-3 text-gray-300">
+                  <Check size={20} className="text-[#4ECDC4] mt-0.5 flex-shrink-0" />
+                  <span>Priority phone support</span>
+                </li>
+              </ul>
+              <button
+                disabled
+                className="w-full py-3 bg-gray-700 text-gray-500 rounded-lg font-semibold cursor-not-allowed"
+              >
+                Join Waitlist
               </button>
             </div>
           </div>
