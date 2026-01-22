@@ -30,7 +30,7 @@ export default function TourOverlay({
 
         if (rect) {
           const tooltipWidth = 320;
-          const tooltipHeight = 200;
+          const tooltipHeight = 250;
           const padding = 16;
 
           let top = 0;
@@ -59,7 +59,14 @@ export default function TourOverlay({
           }
 
           left = Math.max(padding, Math.min(left, window.innerWidth - tooltipWidth - padding));
-          top = Math.max(padding, Math.min(top, window.innerHeight - tooltipHeight - padding));
+
+          if (top + tooltipHeight > window.innerHeight - padding) {
+            top = Math.max(padding, rect.top - tooltipHeight - padding);
+          }
+
+          if (top < padding) {
+            top = Math.max(padding, Math.min(window.innerHeight / 2 - tooltipHeight / 2, window.innerHeight - tooltipHeight - padding));
+          }
 
           setTooltipPosition({ top, left });
         }
@@ -120,6 +127,7 @@ export default function TourOverlay({
           top: tooltipPosition.top,
           left: tooltipPosition.left,
           width: '320px',
+          maxHeight: 'calc(100vh - 32px)',
           zIndex: 52,
         }}
       >

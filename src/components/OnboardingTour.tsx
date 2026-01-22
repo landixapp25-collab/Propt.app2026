@@ -54,10 +54,12 @@ export default function OnboardingTour({ onComplete }: OnboardingTourProps) {
       const currentStep = TOUR_STEPS[currentStepIndex];
 
       if (currentStep.targetSelector) {
-        const element = document.querySelector(currentStep.targetSelector);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        setTimeout(() => {
+          const element = document.querySelector(currentStep.targetSelector!);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+          }
+        }, 100);
       }
     }
   }, [currentStepIndex]);

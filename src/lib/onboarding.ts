@@ -20,7 +20,7 @@ export const TOUR_STEPS: TourStep[] = [
     title: 'Add Your First Property',
     message: 'Start by adding your first property. Click here to begin tracking income and expenses',
     targetSelector: '[data-tour="add-property"]',
-    position: 'bottom',
+    position: 'top',
   },
   {
     id: 'transactions',
