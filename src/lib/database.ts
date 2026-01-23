@@ -39,6 +39,7 @@ export interface Profile {
   bio?: string;
   avatarUrl?: string;
   phone?: string;
+  companyName?: string;
 }
 
 export interface DBProfile {
@@ -47,6 +48,7 @@ export interface DBProfile {
   bio?: string;
   avatar_url?: string;
   phone?: string;
+  company_name?: string;
   created_at: string;
   updated_at: string;
 }
@@ -428,6 +430,7 @@ export const profileService = {
       bio: data.bio,
       avatarUrl: data.avatar_url,
       phone: data.phone,
+      companyName: data.company_name,
     };
   },
 
@@ -440,6 +443,7 @@ export const profileService = {
     if (profile.bio !== undefined) upsertData.bio = profile.bio;
     if (profile.avatarUrl !== undefined) upsertData.avatar_url = profile.avatarUrl;
     if (profile.phone !== undefined) upsertData.phone = profile.phone;
+    if (profile.companyName !== undefined) upsertData.company_name = profile.companyName;
 
     const { data, error } = await supabase
       .from('profiles')
@@ -455,6 +459,7 @@ export const profileService = {
       bio: data.bio,
       avatarUrl: data.avatar_url,
       phone: data.phone,
+      companyName: data.company_name,
     };
   },
 };
