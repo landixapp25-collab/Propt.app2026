@@ -495,7 +495,7 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
                 Login
               </button>
               <a
-                href="mailto:hello@propt.com"
+                href="mailto:hello@propt.app"
                 className="text-gray-300 hover:text-white transition-colors"
               >
                 Contact

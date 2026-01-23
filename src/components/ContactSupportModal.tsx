@@ -26,7 +26,7 @@ export default function ContactSupportModal({ isOpen, onClose }: ContactSupportM
     e.preventDefault();
 
     const emailBody = `Subject: ${formData.subject}%0D%0A%0D%0AMessage:%0D%0A${encodeURIComponent(formData.message)}`;
-    window.location.href = `mailto:hello@propt.app?subject=${encodeURIComponent(formData.subject)}&body=${emailBody}`;
+    window.location.href = `mailto:support@propt.app?subject=${encodeURIComponent(formData.subject)}&body=${emailBody}`;
 
     setSubmitted(true);
     setTimeout(() => {
@@ -108,7 +108,7 @@ export default function ContactSupportModal({ isOpen, onClose }: ContactSupportM
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-sm text-blue-800">
-                <strong>Note:</strong> This will open your email client with a pre-filled message to hello@propt.app
+                <strong>Note:</strong> This will open your email client with a pre-filled message to support@propt.app
               </p>
             </div>
 

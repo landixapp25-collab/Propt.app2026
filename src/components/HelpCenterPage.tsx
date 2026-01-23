@@ -117,7 +117,7 @@ const faqSections: FAQSection[] = [
       },
       {
         question: 'What payment methods do you accept?',
-        answer: 'We\'re currently setting up payment processing. Contact hello@propt.app to upgrade and we\'ll get you started with founder pricing.',
+        answer: 'We\'re currently setting up payment processing. Contact support@propt.app to upgrade and we\'ll get you started with founder pricing.',
       },
       {
         question: 'Can I cancel my subscription anytime?',
@@ -199,7 +199,7 @@ export default function HelpCenterPage({ onBack }: HelpCenterPageProps) {
           <h3 className="text-xl font-bold text-[#F8F9FA] mb-2">Still have questions?</h3>
           <p className="text-gray-300 mb-4">Our support team is here to help</p>
           <a
-            href="mailto:hello@propt.app"
+            href="mailto:support@propt.app"
             className="inline-block px-6 py-3 bg-[#4ECDC4] text-white rounded-lg font-semibold hover:bg-[#45b8b0] transition-colors"
           >
             Contact Support

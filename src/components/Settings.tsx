@@ -17,7 +17,7 @@ type SettingsView = 'main' | 'subscription' | 'helpCenter' | 'privacyPolicy' | '
 export default function Settings() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentView, setCurrentView] = useState<SettingsView>('main');
-  const [userEmail, setUserEmail] = useState('investor@propt.com');
+  const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('Property Investor');
 
   const [showPersonalInfoModal, setShowPersonalInfoModal] = useState(false);
@@ -40,7 +40,7 @@ export default function Settings() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        setUserEmail(user.email || 'investor@propt.com');
+        setUserEmail(user.email || '');
 
         const { data: profile } = await supabase
           .from('profiles')
