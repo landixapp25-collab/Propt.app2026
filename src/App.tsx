@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
+import { Analytics } from '@vercel/analytics/react';
 import DashboardOverview from './components/DashboardOverview';
 import PropertiesPage from './components/PropertiesPage';
 import PropertyDetail from './components/PropertyDetail';
@@ -499,6 +500,8 @@ function App() {
           onDelete={handleDeleteNotification}
         />
       )}
+
+      <Analytics />
     </div>
   );
 }
