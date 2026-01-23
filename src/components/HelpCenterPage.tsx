@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import ContactSupportModal from './ContactSupportModal';
 
 interface HelpCenterPageProps {
   onBack: () => void;
@@ -129,6 +130,7 @@ const faqSections: FAQSection[] = [
 
 export default function HelpCenterPage({ onBack }: HelpCenterPageProps) {
   const [expandedSections, setExpandedSections] = useState<Record<string, number>>({});
+  const [showContactModal, setShowContactModal] = useState(false);
 
   const toggleQuestion = (sectionTitle: string, index: number) => {
     setExpandedSections((prev) => ({
@@ -198,14 +200,19 @@ export default function HelpCenterPage({ onBack }: HelpCenterPageProps) {
         <div className="mt-8 bg-[#537d90] rounded-xl p-6 text-center border border-gray-600">
           <h3 className="text-xl font-bold text-[#F8F9FA] mb-2">Still have questions?</h3>
           <p className="text-gray-300 mb-4">Our support team is here to help</p>
-          <a
-            href="mailto:support@propt.app"
+          <button
+            onClick={() => setShowContactModal(true)}
             className="inline-block px-6 py-3 bg-[#4ECDC4] text-white rounded-lg font-semibold hover:bg-[#45b8b0] transition-colors"
           >
             Contact Support
-          </a>
+          </button>
         </div>
       </div>
+
+      <ContactSupportModal
+        isOpen={showContactModal}
+        onClose={() => setShowContactModal(false)}
+      />
     </div>
   );
 }
