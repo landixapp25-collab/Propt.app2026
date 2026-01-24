@@ -341,7 +341,7 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
             {/* Pro Plan */}
             <div className="bg-gradient-to-br from-[#FF6B6B] to-[#FFB84D] rounded-xl p-8 relative overflow-hidden shadow-2xl transform scale-105">
               <div className="absolute top-4 right-4 bg-white text-[#FF6B6B] px-3 py-1 rounded-full text-xs font-bold">
-                73 spots left
+                47 spots left
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">Pro Plan</h3>
               <div className="flex items-baseline gap-2 mb-2">
@@ -351,7 +351,7 @@ export default function LandingPage({ onNavigateToSignup, onNavigateToLogin }: L
               </div>
               <div className="bg-white bg-opacity-20 rounded-lg px-3 py-2 mb-6">
                 <p className="text-white text-xs font-semibold">
-                  Founder pricing - first 100 users, locked forever
+                  Founder pricing - first 50 users, locked forever
                 </p>
               </div>
               <ul className="space-y-3 mb-8">
