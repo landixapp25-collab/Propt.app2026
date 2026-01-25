@@ -393,8 +393,8 @@ function App() {
       case 'analyze-deal':
         return (
           <AnalyzeDeal
-            onSaveSuccess={() => {
-              loadData();
+            onSaveSuccess={async () => {
+              await loadData();
               setCurrentView('saved-deals');
             }}
           />

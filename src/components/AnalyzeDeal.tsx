@@ -7,7 +7,7 @@ import Logo from './Logo';
 interface AnalysisResult extends AIAnalysis {}
 
 interface AnalyzeDealProps {
-  onSaveSuccess?: () => void;
+  onSaveSuccess?: () => void | Promise<void>;
 }
 
 export default function AnalyzeDeal({ onSaveSuccess }: AnalyzeDealProps) {
