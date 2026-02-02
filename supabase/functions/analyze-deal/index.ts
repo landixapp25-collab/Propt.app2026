@@ -182,20 +182,15 @@ Format as JSON (ONLY JSON):
 }`;
 
     } else if (formData.strategy === 'brrr') {
-      // Simplified BRRR Calculations (no complex mortgage/cash flow)
-      const purchaseLTV = 75; // Standard 75% LTV at purchase (25% deposit)
-
-      // Initial Capital = (Purchase Price × (1 - Purchase LTV%)) + Refurb Budget
-      const initialInvestment = (formData.purchasePrice * (1 - purchaseLTV / 100)) + formData.refurbBudget;
-
-      // Original Mortgage = Purchase Price × Purchase LTV%
-      const originalMortgage = formData.purchasePrice * (purchaseLTV / 100);
+      // BRRR Calculations - Using cash purchase assumption for cleaner calculation
+      // Initial Capital = Purchase Price + Refurb Budget (assuming cash purchase or bridging)
+      const initialInvestment = formData.purchasePrice + formData.refurbBudget;
 
       // New Mortgage = Post-Refurb Value × Refinance LTV%
       const refinanceAmount = formData.postRefurbValue * (formData.refinancePercent / 100);
 
-      // Capital Returned = New Mortgage - Original Mortgage
-      const capitalRecovered = Math.max(0, refinanceAmount - originalMortgage);
+      // Capital Returned = Amount raised from refinance
+      const capitalRecovered = Math.min(refinanceAmount, initialInvestment);
 
       // Capital Left in Deal = Initial Capital - Capital Returned
       let capitalLeftIn = Math.max(0, initialInvestment - capitalRecovered);
@@ -229,6 +224,7 @@ Format as JSON (ONLY JSON):
         capitalLeftIn: Number(capitalLeftIn),
         remainingEquity: Number(remainingEquity),
         monthlyRent: Number(formData.monthlyRent),
+        refinancePercent: Number(formData.refinancePercent),
         totalInvestment: Number(initialInvestment),
         roi: Number(roi),
         isInfiniteReturn: isInfiniteReturn,
