@@ -6,6 +6,8 @@ interface SubscriptionLimitModalProps {
   onClose: () => void;
   currentTier: SubscriptionTier;
   onUpgrade: () => void;
+  title?: string;
+  message?: string;
 }
 
 export default function SubscriptionLimitModal({
@@ -13,10 +15,21 @@ export default function SubscriptionLimitModal({
   onClose,
   currentTier,
   onUpgrade,
+  title: customTitle,
+  message: customMessage,
 }: SubscriptionLimitModalProps) {
   if (!isOpen) return null;
 
   const getMessage = () => {
+    if (customTitle && customMessage) {
+      return {
+        title: customTitle,
+        message: customMessage,
+        upgradeTo: currentTier === 'free' ? 'Pro' : 'Business',
+        benefit: customMessage,
+      };
+    }
+
     if (currentTier === 'free') {
       return {
         title: 'Free Plan Limit Reached',

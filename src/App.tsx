@@ -68,6 +68,17 @@ function App() {
   });
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showSubscriptionLimitModal, setShowSubscriptionLimitModal] = useState(false);
+  const [upgradeModal, setUpgradeModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    tier: 'pro' | 'business';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    tier: 'pro',
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -547,6 +558,18 @@ function App() {
         onClose={() => setShowSubscriptionLimitModal(false)}
         currentTier={userProfile?.subscription_tier || 'free'}
         onUpgrade={handleUpgrade}
+      />
+
+      <SubscriptionLimitModal
+        isOpen={upgradeModal.isOpen}
+        onClose={() => setUpgradeModal({ ...upgradeModal, isOpen: false })}
+        currentTier={userProfile?.subscription_tier || 'free'}
+        onUpgrade={() => {
+          setUpgradeModal({ ...upgradeModal, isOpen: false });
+          setCurrentView('profile');
+        }}
+        title={upgradeModal.title}
+        message={upgradeModal.message}
       />
 
       <Analytics />
