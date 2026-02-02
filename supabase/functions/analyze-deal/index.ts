@@ -60,6 +60,14 @@ Deno.serve(async (req: Request) => {
     let analysisResult: any = {};
 
     if (formData.strategy === 'flip') {
+      console.log('🔍 FLIP - Received from frontend:', {
+        purchasePrice: formData.purchasePrice,
+        developmentBudget: formData.developmentBudget,
+        gdv: formData.gdv,
+        projectTimeline: formData.projectTimeline,
+        holdingCosts: formData.holdingCosts
+      });
+
       const saleCosts = Math.round(formData.gdv * 0.02);
       const totalInvestment = formData.purchasePrice + formData.developmentBudget + (formData.holdingCosts || 0);
       const grossProfit = formData.gdv - totalInvestment - saleCosts;
@@ -67,17 +75,19 @@ Deno.serve(async (req: Request) => {
 
       analysisResult = {
         strategy: 'flip',
-        purchasePrice: Number(formData.purchasePrice),
-        developmentBudget: Number(formData.developmentBudget),
-        gdv: Number(formData.gdv),
-        projectTimeline: Number(formData.projectTimeline),
-        holdingCosts: Number(formData.holdingCosts || 0),
-        saleCosts: Number(saleCosts),
-        grossProfit: Number(grossProfit),
-        profitMargin: Number(profitMargin),
-        totalInvestment: Number(totalInvestment),
-        roi: Number(profitMargin),
+        purchasePrice: formData.purchasePrice,
+        developmentBudget: formData.developmentBudget,
+        gdv: formData.gdv,
+        projectTimeline: formData.projectTimeline,
+        holdingCosts: formData.holdingCosts || 0,
+        saleCosts: saleCosts,
+        grossProfit: grossProfit,
+        profitMargin: profitMargin,
+        totalInvestment: totalInvestment,
+        roi: profitMargin,
       };
+
+      console.log('📤 FLIP - Sending back to frontend:', analysisResult);
 
       let dealRating: string;
       if (profitMargin >= 25) {
@@ -182,15 +192,28 @@ Format as JSON (ONLY JSON):
 }`;
 
     } else if (formData.strategy === 'brrr') {
-      // BRRR Calculations - Using cash purchase assumption for cleaner calculation
-      // Initial Capital = Purchase Price + Refurb Budget (assuming cash purchase or bridging)
-      const initialInvestment = formData.purchasePrice + formData.refurbBudget;
+      console.log('🔍 BRRR - Received from frontend:', {
+        purchasePrice: formData.purchasePrice,
+        refurbBudget: formData.refurbBudget,
+        postRefurbValue: formData.postRefurbValue,
+        monthlyRent: formData.monthlyRent,
+        refinancePercent: formData.refinancePercent
+      });
+
+      // Simplified BRRR Calculations (no complex mortgage/cash flow)
+      const purchaseLTV = 75; // Standard 75% LTV at purchase (25% deposit)
+
+      // Initial Capital = (Purchase Price × (1 - Purchase LTV%)) + Refurb Budget
+      const initialInvestment = (formData.purchasePrice * (1 - purchaseLTV / 100)) + formData.refurbBudget;
+
+      // Original Mortgage = Purchase Price × Purchase LTV%
+      const originalMortgage = formData.purchasePrice * (purchaseLTV / 100);
 
       // New Mortgage = Post-Refurb Value × Refinance LTV%
       const refinanceAmount = formData.postRefurbValue * (formData.refinancePercent / 100);
 
-      // Capital Returned = Amount raised from refinance
-      const capitalRecovered = Math.min(refinanceAmount, initialInvestment);
+      // Capital Returned = New Mortgage - Original Mortgage
+      const capitalRecovered = Math.max(0, refinanceAmount - originalMortgage);
 
       // Capital Left in Deal = Initial Capital - Capital Returned
       let capitalLeftIn = Math.max(0, initialInvestment - capitalRecovered);
@@ -216,19 +239,20 @@ Format as JSON (ONLY JSON):
 
       analysisResult = {
         strategy: 'brrr',
-        purchasePrice: Number(formData.purchasePrice),
-        refurbBudget: Number(formData.refurbBudget),
-        initialInvestment: Number(initialInvestment),
-        postRefurbValue: Number(formData.postRefurbValue),
-        capitalRecovered: Number(capitalRecovered),
-        capitalLeftIn: Number(capitalLeftIn),
-        remainingEquity: Number(remainingEquity),
-        monthlyRent: Number(formData.monthlyRent),
-        refinancePercent: Number(formData.refinancePercent),
-        totalInvestment: Number(initialInvestment),
-        roi: Number(roi),
+        purchasePrice: formData.purchasePrice,
+        refurbBudget: formData.refurbBudget,
+        initialInvestment: initialInvestment,
+        postRefurbValue: formData.postRefurbValue,
+        capitalRecovered: capitalRecovered,
+        capitalLeftIn: capitalLeftIn,
+        remainingEquity: remainingEquity,
+        monthlyRent: formData.monthlyRent,
+        totalInvestment: initialInvestment,
+        roi: roi,
         isInfiniteReturn: isInfiniteReturn,
       };
+
+      console.log('📤 BRRR - Sending back to frontend:', analysisResult);
 
       // Proper BRRR Rating Logic
       let dealRating: string;
