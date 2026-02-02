@@ -79,6 +79,14 @@ export default function AddTransactionModal({
     }
   }, [formData.type]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setIsAnalyzing(false);
+      setAnalysisMessage('');
+      setUploadError('');
+    }
+  }, [isOpen]);
+
   const performAIAnalysis = async (receiptData: Receipt) => {
     setIsAnalyzing(true);
     setAnalysisMessage('Checking subscription...');
@@ -95,6 +103,7 @@ export default function AddTransactionModal({
       const check = await canUseAIReceipt(profile.id, profile.subscription_tier as SubscriptionTier);
       if (!check.allowed) {
         setIsAnalyzing(false);
+        setAnalysisMessage('');
         setUploadError('');
         setReceipt(null);
         onShowUpgrade(
@@ -364,7 +373,12 @@ export default function AddTransactionModal({
             <p className="text-sm text-gray-300 mt-1">{propertyName}</p>
           </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              setIsAnalyzing(false);
+              setAnalysisMessage('');
+              setUploadError('');
+              onClose();
+            }}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <X size={20} className="text-gray-500" />
