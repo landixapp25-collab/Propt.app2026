@@ -145,7 +145,7 @@ export default function SavedDeals({
     if (deals.length === 0) return null;
 
     let bestDeal = deals[0];
-    let bestValue: number;
+    let bestValue: number | undefined;
 
     switch (category) {
       case 'askingPrice':
@@ -170,8 +170,10 @@ export default function SavedDeals({
         return null;
     }
 
+    if (bestValue == null) return null;
+
     for (const deal of deals) {
-      let currentValue: number;
+      let currentValue: number | undefined;
 
       switch (category) {
         case 'askingPrice':
@@ -196,7 +198,7 @@ export default function SavedDeals({
           continue;
       }
 
-      if (higherIsBetter ? currentValue > bestValue : currentValue < bestValue) {
+      if (currentValue != null && (higherIsBetter ? currentValue > bestValue : currentValue < bestValue)) {
         bestValue = currentValue;
         bestDeal = deal;
       }
@@ -559,7 +561,7 @@ export default function SavedDeals({
                       <td className="p-4 font-medium text-gray-700 border border-gray-200">Purchase Costs</td>
                       {comparisonDeals.map(deal => (
                         <td key={deal.id} className="p-4 text-center border border-gray-200">
-                          {formatCurrency(deal.aiAnalysis.purchaseCosts)}
+                          {deal.aiAnalysis.purchaseCosts != null ? formatCurrency(deal.aiAnalysis.purchaseCosts) : 'N/A'}
                         </td>
                       ))}
                     </tr>
@@ -586,7 +588,9 @@ export default function SavedDeals({
                           <td key={deal.id} className={`p-4 text-center border border-gray-200 ${isBest ? 'bg-green-50' : ''}`}>
                             <div className="flex items-center justify-center gap-2">
                               {isBest && <Crown size={18} className="text-green-600" />}
-                              <span className="font-semibold">{formatCurrency(deal.aiAnalysis.estimatedMonthlyRent)}</span>
+                              <span className="font-semibold">
+                                {deal.aiAnalysis.estimatedMonthlyRent != null ? formatCurrency(deal.aiAnalysis.estimatedMonthlyRent) : 'N/A'}
+                              </span>
                             </div>
                           </td>
                         );
@@ -600,7 +604,7 @@ export default function SavedDeals({
                           <td key={deal.id} className={`p-4 text-center border border-gray-200 ${isBest ? 'bg-green-50' : ''}`}>
                             <div className="flex items-center justify-center gap-2">
                               {isBest && <Crown size={18} className="text-green-600" />}
-                              <span className="font-semibold">{deal.aiAnalysis.rentalYield.toFixed(2)}%</span>
+                              <span className="font-semibold">{deal.aiAnalysis.rentalYield?.toFixed(2) || '0.00'}%</span>
                             </div>
                           </td>
                         );
@@ -614,10 +618,14 @@ export default function SavedDeals({
                           <td key={deal.id} className={`p-4 text-center border border-gray-200 ${isBest ? 'bg-green-50' : ''}`}>
                             <div className="flex items-center justify-center gap-2">
                               {isBest && <Crown size={18} className="text-green-600" />}
-                              <span className={`font-semibold flex items-center gap-1 ${deal.aiAnalysis.annualProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {deal.aiAnalysis.annualProfit >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                                {formatCurrency(Math.abs(deal.aiAnalysis.annualProfit))}
-                              </span>
+                              {deal.aiAnalysis.annualProfit != null ? (
+                                <span className={`font-semibold flex items-center gap-1 ${deal.aiAnalysis.annualProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                  {deal.aiAnalysis.annualProfit >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                                  {formatCurrency(Math.abs(deal.aiAnalysis.annualProfit))}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">N/A</span>
+                              )}
                             </div>
                           </td>
                         );
@@ -631,7 +639,7 @@ export default function SavedDeals({
                           <td key={deal.id} className={`p-4 text-center border border-gray-200 ${isBest ? 'bg-green-50' : ''}`}>
                             <div className="flex items-center justify-center gap-2">
                               {isBest && <Crown size={18} className="text-green-600" />}
-                              <span className="font-semibold">{deal.aiAnalysis.roi.toFixed(2)}%</span>
+                              <span className="font-semibold">{deal.aiAnalysis.roi?.toFixed(2) || '0.00'}%</span>
                             </div>
                           </td>
                         );
@@ -701,24 +709,28 @@ export default function SavedDeals({
                         <span className="text-sm text-gray-300">Total Investment</span>
                         <span className="font-semibold">{formatCurrency(deal.aiAnalysis.totalInvestment)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-300">Monthly Rent</span>
-                        <span className="font-semibold">{formatCurrency(deal.aiAnalysis.estimatedMonthlyRent)}</span>
-                      </div>
+                      {deal.aiAnalysis.estimatedMonthlyRent != null && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-300">Monthly Rent</span>
+                          <span className="font-semibold">{formatCurrency(deal.aiAnalysis.estimatedMonthlyRent)}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-300">Rental Yield</span>
-                        <span className="font-semibold">{deal.aiAnalysis.rentalYield.toFixed(2)}%</span>
+                        <span className="font-semibold">{deal.aiAnalysis.rentalYield?.toFixed(2) || '0.00'}%</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-300">ROI</span>
-                        <span className="font-semibold">{deal.aiAnalysis.roi.toFixed(2)}%</span>
+                        <span className="font-semibold">{deal.aiAnalysis.roi?.toFixed(2) || '0.00'}%</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-300">Annual Profit</span>
-                        <span className={`font-semibold ${deal.aiAnalysis.annualProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {formatCurrency(Math.abs(deal.aiAnalysis.annualProfit))}
-                        </span>
-                      </div>
+                      {deal.aiAnalysis.annualProfit != null && (
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-300">Annual Profit</span>
+                          <span className={`font-semibold ${deal.aiAnalysis.annualProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {formatCurrency(Math.abs(deal.aiAnalysis.annualProfit))}
+                          </span>
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-300">Risk Factors</span>
                         <span className="font-semibold">{deal.aiAnalysis.riskFactors.length}</span>
@@ -745,12 +757,16 @@ export default function SavedDeals({
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getRatingColor(recommendedDeal.aiAnalysis.dealRating)}`}>
                           {getRatingLabel(recommendedDeal.aiAnalysis.dealRating)} Deal
                         </span>
-                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
-                          {recommendedDeal.aiAnalysis.rentalYield.toFixed(2)}% Yield
-                        </span>
-                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700">
-                          {recommendedDeal.aiAnalysis.roi.toFixed(2)}% ROI
-                        </span>
+                        {recommendedDeal.aiAnalysis.rentalYield != null && (
+                          <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
+                            {recommendedDeal.aiAnalysis.rentalYield.toFixed(2)}% Yield
+                          </span>
+                        )}
+                        {recommendedDeal.aiAnalysis.roi != null && (
+                          <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700">
+                            {recommendedDeal.aiAnalysis.roi.toFixed(2)}% ROI
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

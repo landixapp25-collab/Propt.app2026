@@ -333,7 +333,9 @@ export default function ViewAnalysisModal({ deal, onClose }: ViewAnalysisModalPr
         <div className="p-6 space-y-6">
           <div className={`border rounded-lg p-6 ${getRatingColor(deal.aiAnalysis.dealRating)}`}>
             <h3 className="text-2xl font-bold mb-2">{getRatingLabel(deal.aiAnalysis.dealRating)}</h3>
-            <p className="text-sm opacity-90">{deal.aiAnalysis.reasoning}</p>
+            {deal.aiAnalysis.reasoning && (
+              <p className="text-sm opacity-90">{deal.aiAnalysis.reasoning}</p>
+            )}
           </div>
 
           <div>

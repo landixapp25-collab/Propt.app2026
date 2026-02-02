@@ -59,8 +59,8 @@ export interface AIAnalysis {
 
   totalInvestment: number;
   purchaseCosts?: number;
-  roi: number;
-  reasoning: string;
+  roi?: number;
+  reasoning?: string;
   marketComparison: string;
   riskFactors: string[];
   dataSources?: string;

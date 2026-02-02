@@ -203,15 +203,17 @@ export default function SavedDealCard({
                 </p>
               </div>
             )}
-            <div>
-              <div className="flex items-center gap-1 mb-1">
-                <BarChart size={16} className="text-[#3B82F6]" />
-                <p className="text-sm text-gray-300">ROI</p>
+            {deal.aiAnalysis.roi != null && (
+              <div>
+                <div className="flex items-center gap-1 mb-1">
+                  <BarChart size={16} className="text-[#3B82F6]" />
+                  <p className="text-sm text-gray-300">ROI</p>
+                </div>
+                <p className="text-lg font-semibold text-[#F8F9FA]">
+                  {deal.aiAnalysis.roi.toFixed(2)}%
+                </p>
               </div>
-              <p className="text-lg font-semibold text-[#F8F9FA]">
-                {deal.aiAnalysis.roi.toFixed(2)}%
-              </p>
-            </div>
+            )}
             {deal.aiAnalysis.monthlyCashFlow && (
               <div>
                 <div className="flex items-center gap-1 mb-1">

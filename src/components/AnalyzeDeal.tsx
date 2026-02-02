@@ -1083,13 +1083,15 @@ export default function AnalyzeDeal({ onSaveSuccess }: AnalyzeDealProps) {
                   {renderMetrics()}
                 </div>
 
-                <div className="bg-[#537d90] rounded-lg shadow-md p-6 mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Lightbulb size={24} className="text-[#F59E0B]" />
-                    <h3 className="text-xl font-bold text-[#F8F9FA]">Why This Rating?</h3>
+                {analysis.reasoning && (
+                  <div className="bg-[#537d90] rounded-lg shadow-md p-6 mb-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Lightbulb size={24} className="text-[#F59E0B]" />
+                      <h3 className="text-xl font-bold text-[#F8F9FA]">Why This Rating?</h3>
+                    </div>
+                    <p className="text-gray-300 leading-relaxed">{analysis.reasoning}</p>
                   </div>
-                  <p className="text-gray-300 leading-relaxed">{analysis.reasoning}</p>
-                </div>
+                )}
 
                 <div className="bg-[#537d90] rounded-lg shadow-md p-6 mb-6">
                   <div className="flex items-center gap-2 mb-3">
