@@ -155,7 +155,9 @@ export default function AddTransactionModal({
       }
     } catch (error) {
       console.error('AI analysis error:', error);
-      setUploadError('Auto-fill temporarily unavailable. Please enter details manually.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error details:', errorMessage);
+      setUploadError(`Error: ${errorMessage}. Please enter details manually.`);
     } finally {
       setIsAnalyzing(false);
     }
