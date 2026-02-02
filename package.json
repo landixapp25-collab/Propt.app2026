@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^2.4.0",
     "@supabase/supabase-js": "^2.57.4",
     "@vercel/analytics": "latest",
     "jszip": "^3.10.1",
