@@ -28,6 +28,7 @@ import PropertyCard from './PropertyCard';
 import { Property, Transaction, PropertyStatus } from '../types';
 import DateRangeFilterModal, { DateRangeOption } from './DateRangeFilterModal';
 import { exportAllPropertiesToZip } from '../lib/exportReceipts';
+import { getUserProfile } from '../lib/subscription';
 
 interface DashboardProps {
   properties: Property[];
@@ -36,6 +37,7 @@ interface DashboardProps {
   onDeleteProperty: (propertyId: string) => void;
   onDeleteTransaction: (transactionId: string) => void;
   onUpdateProperty: (propertyId: string, updates: Partial<Property>) => void;
+  onShowUpgrade: (title: string, message: string, tier: 'pro' | 'business') => void;
 }
 
 interface PortfolioInsights {
@@ -60,7 +62,7 @@ interface PortfolioInsights {
   nextSteps: string[];
 }
 
-export default function Dashboard({ properties, transactions, onAddTransaction, onDeleteProperty, onDeleteTransaction, onUpdateProperty }: DashboardProps) {
+export default function Dashboard({ properties, transactions, onAddTransaction, onDeleteProperty, onDeleteTransaction, onUpdateProperty, onShowUpgrade }: DashboardProps) {
   const [insights, setInsights] = useState<PortfolioInsights | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState<string | null>(null);
@@ -180,7 +182,22 @@ export default function Dashboard({ properties, transactions, onAddTransaction, 
     });
   };
 
-  const handleExportAllClick = () => {
+  const handleExportAllClick = async () => {
+    const profile = await getUserProfile();
+
+    if (!profile) {
+      return;
+    }
+
+    if (profile.subscription_tier === 'free') {
+      onShowUpgrade(
+        'Tax Pack Exports are a Pro Feature',
+        'Start your 7-day free trial to export all transactions and receipts for your accountant!',
+        'pro'
+      );
+      return;
+    }
+
     setShowDateRangeModal(true);
   };
 

@@ -4,6 +4,7 @@ import { Property, Transaction, PropertyStatus } from '../types';
 import ReceiptViewer from './ReceiptViewer';
 import { exportReceiptsToZip } from '../lib/exportReceipts';
 import DateRangeFilterModal, { DateRangeOption } from './DateRangeFilterModal';
+import { getUserProfile } from '../lib/subscription';
 
 interface PropertyDetailProps {
   property: Property;
@@ -13,6 +14,7 @@ interface PropertyDetailProps {
   onAddTransaction: (propertyId: string) => void;
   onDeleteTransaction: (transactionId: string) => void;
   onViewAnalysis: () => void;
+  onShowUpgrade: (title: string, message: string, tier: 'pro' | 'business') => void;
 }
 
 export default function PropertyDetail({
@@ -23,6 +25,7 @@ export default function PropertyDetail({
   onAddTransaction,
   onDeleteTransaction,
   onViewAnalysis,
+  onShowUpgrade,
 }: PropertyDetailProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDeleteTransactionConfirm, setShowDeleteTransactionConfirm] = useState(false);
@@ -105,7 +108,22 @@ export default function PropertyDetail({
     }
   };
 
-  const handleExportClick = () => {
+  const handleExportClick = async () => {
+    const profile = await getUserProfile();
+
+    if (!profile) {
+      return;
+    }
+
+    if (profile.subscription_tier === 'free') {
+      onShowUpgrade(
+        'Tax Pack Exports are a Pro Feature',
+        'Start your 7-day free trial to export all transactions and receipts for your accountant!',
+        'pro'
+      );
+      return;
+    }
+
     setShowDateRangeModal(true);
   };
 

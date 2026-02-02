@@ -4,6 +4,7 @@ import { Property, Transaction } from '../types';
 import Logo from './Logo';
 import DateRangeFilterModal, { DateRangeOption } from './DateRangeFilterModal';
 import { exportAllPropertiesToZip } from '../lib/exportReceipts';
+import { getUserProfile } from '../lib/subscription';
 
 interface DashboardOverviewProps {
   properties: Property[];
@@ -12,6 +13,7 @@ interface DashboardOverviewProps {
   onNavigateToAnalyze: () => void;
   onOpenNotifications: () => void;
   unreadNotificationCount: number;
+  onShowUpgrade: (title: string, message: string, tier: 'pro' | 'business') => void;
 }
 
 export default function DashboardOverview({
@@ -21,6 +23,7 @@ export default function DashboardOverview({
   onNavigateToAnalyze,
   onOpenNotifications,
   unreadNotificationCount,
+  onShowUpgrade,
 }: DashboardOverviewProps) {
   const [showDateRangeModal, setShowDateRangeModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -54,7 +57,22 @@ export default function DashboardOverview({
   const projectedAnnualYield = totalInvestment > 0 ? (annualIncome / totalInvestment) * 100 : 0;
   const capitalDeployed = totalInvestment;
 
-  const handleExportAllClick = () => {
+  const handleExportAllClick = async () => {
+    const profile = await getUserProfile();
+
+    if (!profile) {
+      return;
+    }
+
+    if (profile.subscription_tier === 'free') {
+      onShowUpgrade(
+        'Tax Pack Exports are a Pro Feature',
+        'Start your 7-day free trial to export all transactions and receipts for your accountant!',
+        'pro'
+      );
+      return;
+    }
+
     setShowDateRangeModal(true);
   };
 

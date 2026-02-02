@@ -399,6 +399,9 @@ function App() {
             onNavigateToAnalyze={() => setCurrentView('analyze-deal')}
             onOpenNotifications={() => setShowNotifications(true)}
             unreadNotificationCount={notifications.filter(n => !n.read).length}
+            onShowUpgrade={(title, message, tier) => {
+              setUpgradeModal({ isOpen: true, title, message, tier });
+            }}
           />
         );
 
@@ -423,6 +426,9 @@ function App() {
             onAddTransaction={openTransactionModal}
             onDeleteTransaction={handleDeleteTransaction}
             onViewAnalysis={() => {}}
+            onShowUpgrade={(title, message, tier) => {
+              setUpgradeModal({ isOpen: true, title, message, tier });
+            }}
           />
         ) : null;
 
@@ -471,6 +477,9 @@ function App() {
             onNavigateToAnalyze={() => setCurrentView('analyze-deal')}
             onOpenNotifications={() => setShowNotifications(true)}
             unreadNotificationCount={notifications.filter(n => !n.read).length}
+            onShowUpgrade={(title, message, tier) => {
+              setUpgradeModal({ isOpen: true, title, message, tier });
+            }}
           />
         );
     }
