@@ -14,9 +14,10 @@ import Settings from './components/Settings';
 import BottomNav from './components/BottomNav';
 import NotificationsModal from './components/NotificationsModal';
 import LandingPage from './components/LandingPage';
-import { Property, Transaction, SavedDeal, Notification } from './types';
+import { Property, Transaction, SavedDeal, Notification, UserProfile, SubscriptionTier } from './types';
 import { supabase } from './lib/supabase';
 import { propertyService, transactionService, savedDealService, notificationService } from './lib/database';
+import SubscriptionLimitModal from './components/SubscriptionLimitModal';
 
 type ViewType = 'landing' | 'login' | 'signup' | 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile' | 'property-detail' | 'add-property' | 'insights-full';
 type AuthMode = 'login' | 'signup';
@@ -65,6 +66,8 @@ function App() {
     propertyId: '',
     propertyName: '',
   });
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [showSubscriptionLimitModal, setShowSubscriptionLimitModal] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -95,19 +98,54 @@ function App() {
 
   const loadData = async () => {
     try {
-      const [propertiesData, transactionsData, savedDealsData, notificationsData] = await Promise.all([
+      const [propertiesData, transactionsData, savedDealsData, notificationsData, profileData] = await Promise.all([
         propertyService.getAll(),
         transactionService.getAll(),
         savedDealService.getAll(),
         notificationService.getAll(),
+        supabase.from('profiles').select('*').single(),
       ]);
       setProperties(propertiesData);
       setTransactions(transactionsData);
       setSavedDeals(savedDealsData);
       setNotifications(notificationsData);
+      if (profileData.data) {
+        setUserProfile(profileData.data as UserProfile);
+      }
     } catch (error) {
       console.error('Error loading data:', error);
     }
+  };
+
+  const checkSubscriptionLimit = (): boolean => {
+    if (!userProfile) return true;
+
+    const nonDemoProperties = properties.filter(p => !p.isDemo);
+    const propertyCount = nonDemoProperties.length;
+    const tier = userProfile.subscription_tier;
+
+    if (tier === 'free' && propertyCount >= 1) {
+      return false;
+    }
+
+    if (tier === 'pro' && propertyCount >= 6) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleAddPropertyClick = () => {
+    if (!checkSubscriptionLimit()) {
+      setShowSubscriptionLimitModal(true);
+      return;
+    }
+    setCurrentView('add-property');
+  };
+
+  const handleUpgrade = () => {
+    setShowSubscriptionLimitModal(false);
+    setCurrentView('profile');
   };
 
   const handleAddProperty = async (propertyData: {
@@ -359,7 +397,7 @@ function App() {
             properties={properties}
             transactions={transactions}
             onPropertyClick={handlePropertyClick}
-            onAddProperty={() => setCurrentView('add-property')}
+            onAddProperty={handleAddPropertyClick}
             onUpdateProperty={handleUpdateProperty}
           />
         );
@@ -500,6 +538,13 @@ function App() {
           onDelete={handleDeleteNotification}
         />
       )}
+
+      <SubscriptionLimitModal
+        isOpen={showSubscriptionLimitModal}
+        onClose={() => setShowSubscriptionLimitModal(false)}
+        currentTier={userProfile?.subscription_tier || 'free'}
+        onUpgrade={handleUpgrade}
+      />
 
       <Analytics />
     </div>

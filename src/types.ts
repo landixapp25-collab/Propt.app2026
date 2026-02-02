@@ -117,3 +117,15 @@ export interface Notification {
   propertyId?: string;
   createdAt: string;
 }
+
+export type SubscriptionTier = 'free' | 'pro' | 'business';
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  company_name?: string;
+  subscription_tier: SubscriptionTier;
+  created_at: string;
+  updated_at: string;
+}
