@@ -527,6 +527,9 @@ function App() {
         isOpen={transactionModal.isOpen}
         onClose={closeTransactionModal}
         onSubmit={handleAddTransaction}
+        onShowUpgrade={(title, message, tier) => {
+          setUpgradeModal({ isOpen: true, title, message, tier });
+        }}
       />
 
       {showNotifications && (

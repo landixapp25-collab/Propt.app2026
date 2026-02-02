@@ -4,6 +4,7 @@ import { TransactionType, IncomeCategory, ExpenseCategory, Receipt } from '../ty
 import { compressImage, formatFileSize } from '../lib/imageCompression';
 import { analyzeReceipt, ReceiptAnalysisResult } from '../lib/receiptAnalysis';
 import { detectImageFormat } from '../lib/imageFormat';
+import { canUseAIReceipt, incrementAIReceiptUsage, getUserProfile, SubscriptionTier } from '../lib/subscription';
 
 interface AddTransactionModalProps {
   propertyId: string;
@@ -19,6 +20,7 @@ interface AddTransactionModalProps {
     description?: string;
     receipt?: Receipt;
   }) => void;
+  onShowUpgrade: (title: string, message: string, tier: 'pro' | 'business') => void;
 }
 
 export default function AddTransactionModal({
@@ -27,6 +29,7 @@ export default function AddTransactionModal({
   isOpen,
   onClose,
   onSubmit,
+  onShowUpgrade,
 }: AddTransactionModalProps) {
   const [formData, setFormData] = useState({
     type: 'Income' as TransactionType,
@@ -78,10 +81,31 @@ export default function AddTransactionModal({
 
   const performAIAnalysis = async (receiptData: Receipt) => {
     setIsAnalyzing(true);
-    setAnalysisMessage('Analysing receipt...');
+    setAnalysisMessage('Checking subscription...');
     setUploadError('');
 
     try {
+      const profile = await getUserProfile();
+      if (!profile) {
+        setUploadError('Please sign in to use AI receipt extraction');
+        setIsAnalyzing(false);
+        return;
+      }
+
+      const check = await canUseAIReceipt(profile.id, profile.subscription_tier as SubscriptionTier);
+      if (!check.allowed) {
+        setIsAnalyzing(false);
+        setUploadError('');
+        setReceipt(null);
+        onShowUpgrade(
+          profile.subscription_tier === 'free' ? 'Upgrade to Pro' : 'Upgrade to Business',
+          check.reason || '',
+          profile.subscription_tier === 'free' ? 'pro' : 'business'
+        );
+        return;
+      }
+
+      setAnalysisMessage('Analysing receipt...');
       const result = await analyzeReceipt(receiptData.data, receiptData.fileType);
 
       if (result.success) {
@@ -118,6 +142,8 @@ export default function AddTransactionModal({
 
         setAiExtracted(true);
         setAnalysisMessage('Receipt analysed successfully');
+
+        await incrementAIReceiptUsage(profile.id);
 
         setTimeout(() => {
           setAnalysisMessage('');
