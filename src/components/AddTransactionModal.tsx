@@ -4,7 +4,8 @@ import { TransactionType, IncomeCategory, ExpenseCategory, Receipt } from '../ty
 import { compressImage, formatFileSize } from '../lib/imageCompression';
 import { analyzeReceipt, ReceiptAnalysisResult } from '../lib/receiptAnalysis';
 import { detectImageFormat } from '../lib/imageFormat';
-import { canUseAIReceipt, incrementAIReceiptUsage, getUserProfile, SubscriptionTier } from '../lib/subscription';
+import { canUseAIReceipt, incrementAIReceiptUsage, getUserProfile, SubscriptionTier, canAddTransaction } from '../lib/subscription';
+import { supabase } from '../lib/supabase';
 
 interface AddTransactionModalProps {
   propertyId: string;
@@ -324,42 +325,65 @@ export default function AddTransactionModal({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (validate()) {
-      onSubmit({
-        propertyId,
-        type: formData.type,
-        category: formData.category,
-        amount: parseFloat(formData.amount),
-        date: formData.date,
-        description: formData.description || undefined,
-        receipt: receipt || undefined,
-      });
-
-      setFormData({
-        type: 'Income',
-        category: 'Rental Income',
-        amount: '',
-        date: new Date().toISOString().split('T')[0],
-        description: '',
-      });
-      setErrors({});
-      setReceipt(null);
-      setPreviewImage(null);
-      setCapturedFile(null);
-      setUploadError('');
-      setAnalysisMessage('');
-      setAiExtracted(false);
-      if (cameraInputRef.current) {
-        cameraInputRef.current.value = '';
-      }
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-      onClose();
+    if (!validate()) {
+      return;
     }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const profile = await getUserProfile();
+    if (!profile) return;
+
+    const canAdd = await canAddTransaction(user.id, profile.subscription_tier);
+    if (!canAdd.allowed) {
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      nextMonth.setDate(1);
+      const monthName = nextMonth.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
+      onShowUpgrade(
+        "You've Reached Your Transaction Limit",
+        `You've reached your 10 transaction limit this month. Upgrade to Pro for unlimited transactions. Your limit resets on ${monthName}.`,
+        'pro'
+      );
+      return;
+    }
+
+    onSubmit({
+      propertyId,
+      type: formData.type,
+      category: formData.category,
+      amount: parseFloat(formData.amount),
+      date: formData.date,
+      description: formData.description || undefined,
+      receipt: receipt || undefined,
+    });
+
+    setFormData({
+      type: 'Income',
+      category: 'Rental Income',
+      amount: '',
+      date: new Date().toISOString().split('T')[0],
+      description: '',
+    });
+    setErrors({});
+    setReceipt(null);
+    setPreviewImage(null);
+    setCapturedFile(null);
+    setUploadError('');
+    setAnalysisMessage('');
+    setAiExtracted(false);
+    if (cameraInputRef.current) {
+      cameraInputRef.current.value = '';
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    onClose();
   };
 
   if (!isOpen) return null;

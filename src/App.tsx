@@ -18,6 +18,7 @@ import { Property, Transaction, SavedDeal, Notification, UserProfile, Subscripti
 import { supabase } from './lib/supabase';
 import { propertyService, transactionService, savedDealService, notificationService } from './lib/database';
 import SubscriptionLimitModal from './components/SubscriptionLimitModal';
+import { incrementTransactionUsage } from './lib/subscription';
 
 type ViewType = 'landing' | 'login' | 'signup' | 'dashboard' | 'properties' | 'analyze-deal' | 'saved-deals' | 'profile' | 'property-detail' | 'add-property' | 'insights-full';
 type AuthMode = 'login' | 'signup';
@@ -187,6 +188,10 @@ function App() {
     try {
       const newTransaction = await transactionService.create(transactionData);
       setTransactions([newTransaction, ...transactions]);
+
+      if (user && userProfile?.subscription_tier === 'free') {
+        await incrementTransactionUsage(user.id);
+      }
     } catch (error) {
       console.error('Error adding transaction:', error);
     }
