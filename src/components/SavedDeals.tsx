@@ -12,7 +12,8 @@ interface SavedDealsProps {
   onMoveToPortfolio: (deal: SavedDeal, data: {
     purchasePrice: number;
     purchaseDate: string;
-    currentValue: number;
+    currentValue: number | null;
+    status: 'Stabilized' | 'In Development' | 'Under Offer' | 'Planning';
   }) => void;
   onUpdateDeal: (dealId: string, updates: Partial<SavedDeal>) => void;
 }

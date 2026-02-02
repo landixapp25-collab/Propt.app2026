@@ -41,10 +41,13 @@ export interface AIAnalysis {
   profitMargin?: number;
 
   monthlyRent?: number;
+  estimatedMonthlyRent?: number;
   grossYield?: number;
   netYield?: number;
+  rentalYield?: number;
   monthlyCashFlow?: number;
   monthlyExpenses?: number;
+  annualProfit?: number;
 
   initialInvestment?: number;
   postRefurbValue?: number;
@@ -55,6 +58,7 @@ export interface AIAnalysis {
   isInfiniteReturn?: boolean;
 
   totalInvestment: number;
+  purchaseCosts?: number;
   roi: number;
   reasoning: string;
   marketComparison: string;
